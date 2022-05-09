@@ -2,8 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\InsanityBot.Extensions.Datafixers\InsanityBot.Extensions.Datafixers.csproj" />
+    <ProjectReference Include="..\InsanityBot.Extensions\InsanityBot.Extensions.csproj" />
+  </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace InsanityBot;
+namespace InsanityBot;
 
 using System;
 
