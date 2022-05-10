@@ -1,0 +1,23 @@
+namespace InsanityBot.Extensions.Permissions.Objects;
+
+using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
+
+public record RolePermissions : IPermissionObject
+{
+    [JsonPropertyName("parents")]
+    public UInt64[] Parents { get; set; } = Array.Empty<UInt64>();
+
+    [JsonPropertyName("permissions")]
+    public Dictionary<String, PermissionValue> Permissions { get; set; } = new();
+
+    [JsonPropertyName("is_administrator")]
+    public Boolean IsAdministrator { get; set; } = false;
+
+    [JsonPropertyName("snowflake")]
+    public UInt64 SnowflakeIdentifier { get; set; } = 0;
+
+    [JsonPropertyName("update_guid")]
+    public Guid UpdateGuid { get; set; } = Guid.Empty;
+}
