@@ -6,6 +6,7 @@ using InsanityBot.Extensions.Permissions.Objects;
 
 [JsonSerializable(typeof(UserPermissions), TypeInfoPropertyName = "User")]
 [JsonSerializable(typeof(RolePermissions), TypeInfoPropertyName = "Role")]
+[JsonSerializable(typeof(DefaultPermissions), TypeInfoPropertyName = "Default")]
 public partial class PermissionSerializationContexts
 {
 }
