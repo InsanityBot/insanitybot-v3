@@ -1,13 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    
+    <Import Project="../InsanityBot.targets"/>
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\InsanityBot.Extensions.Datafixers\InsanityBot.Extensions.Datafixers.csproj" />
-    <ProjectReference Include="..\InsanityBot.Extensions\InsanityBot.Extensions.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\InsanityBot.Extensions.Datafixers\InsanityBot.Extensions.Datafixers.csproj" />
+        <ProjectReference Include="..\InsanityBot.Extensions\InsanityBot.Extensions.csproj" />
+    </ItemGroup>
 
 </Project>

@@ -1,37 +1,46 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-	<TargetFramework>net6.0</TargetFramework>
-	<ImplicitUsings>enable</ImplicitUsings>
-	<Nullable>enable</Nullable>
-  </PropertyGroup>
+    <Import Project="../InsanityBot.targets"/>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-		<PackageReference Include="Remora.Discord.API" Version="57.0.0" />
-		<PackageReference Include="Remora.Discord.API.Abstractions" Version="60.0.0" />
-		<PackageReference Include="Remora.Discord.Commands" Version="21.0.1" />
-		<PackageReference Include="Remora.Discord.Extensions" Version="4.1.0" />
-		<PackageReference Include="Remora.Discord.Gateway" Version="8.0.5" />
-		<PackageReference Include="Remora.Discord.Interactivity" Version="3.0.14" />
-		<PackageReference Include="Remora.Discord.Pagination" Version="2.0.14" />
-		<PackageReference Include="Remora.Discord.Rest" Version="35.0.0" />
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+        
+        <PackageReference Include="Remora.Commands" Version="9.0.6" />
+        <PackageReference Include="Remora.Discord.API" Version="57.0.0" />
+        <PackageReference Include="Remora.Discord.API.Abstractions" Version="60.0.0" />
+        <PackageReference Include="Remora.Discord.Commands" Version="21.0.1" />
+        <PackageReference Include="Remora.Discord.Extensions" Version="4.1.0" />
+        <PackageReference Include="Remora.Discord.Gateway" Version="8.0.5" />
+        <PackageReference Include="Remora.Discord.Interactivity" Version="3.0.15" />
+        <PackageReference Include="Remora.Discord.Pagination" Version="2.0.15" />
+        <PackageReference Include="Remora.Discord.Rest" Version="35.0.0" />
+        <PackageReference Include="Remora.Rest" Version="1.2.4" />
+        <PackageReference Include="Remora.Rest.Core" Version="2.0.2" />
 
-		<PackageReference Include="Serilog" Version="2.11.0" />
-		<PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
-		<PackageReference Include="Serilog.Enrichers.Process" Version="2.0.2" />
-		<PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
-		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
-		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-		<PackageReference Include="Serilog.Sinks.SpectreConsole" Version="0.1.1" />
-		<PackageReference Include="SerilogMetrics" Version="2.1.0" />
+        <PackageReference Include="Serilog" Version="2.11.0" />
+        <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
+        <PackageReference Include="Serilog.Enrichers.Process" Version="2.0.2" />
+        <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
+        <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
+        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+        <PackageReference Include="Serilog.Sinks.SpectreConsole" Version="0.1.1" />
+        <PackageReference Include="SerilogMetrics" Version="2.1.0" />
 
-		<PackageReference Include="Spectre.Console" Version="0.44.0" />
-		<PackageReference Include="Spectre.Console.Extensions.Progress" Version="1.0.0" />
+        <PackageReference Include="Spectre.Console" Version="0.44.0" />
+        <PackageReference Include="Spectre.Console.Extensions.Progress" Version="1.0.0" />
 
-		<PackageReference Include="VTP.RemoraHelpSystem" Version="1.1.1" />
-	</ItemGroup>
+        <PackageReference Include="VTP.RemoraHelpSystem" Version="1.1.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InsanityBot.Extensions.Datafixers\InsanityBot.Extensions.Datafixers.csproj" />
+    </ItemGroup>
 
 </Project>

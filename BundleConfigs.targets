@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project InitialTargets="CreateConfigFolder" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+   <!-- Creates the configuration folder. -->
+    <Target Name="CreateConfigFolder">
+        <MakeDir Directories="../config"/>
+    </Target>
+
+    <!-- Copies dev configurations into the folder they are expected to be by the compiler. -->
+    <Target Name="BundleDevConfigurations" 
+            Condition="'$(Configuration)' == 'Debug'"
+            BeforeTargets="InitializeSourceControlInformation">
+        <Copy
+            SourceFiles="./config/dev/*.json"
+            DestinationFolder="../config"
+        />
+        <Delete Files="./config/dev/*.*"/>
+        <Delete Files="./config/release/*.*"/>
+    </Target>
+
+    <!-- Copies release configurations into the folder they are expected to be by the compiler. -->
+    <Target Name="BundleReleaseConfiguration"
+            Condition="'$(Configuration)' == 'Release'"
+            BeforeTargets="InitializeSourceControlInformation">
+        <Copy
+            SourceFiles="./config/release/*.json"
+            DestinationFolder="../config"
+        />
+        <Delete Files="./config/dev/*.*"/>
+        <Delete Files="./config/release/*.*"/>
+    </Target>
+    
+</Project>

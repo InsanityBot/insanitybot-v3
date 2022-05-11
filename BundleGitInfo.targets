@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <Target Name="SetSourceRevisionHash" BeforeTargets="InitializeSourceControlInformation">
+        <Exec Command="git rev-parse HEAD" ConsoleToMSBuild="True" IgnoreExitCode="False">
+            <Output PropertyName="SourceRevisionHash" TaskParameter="ConsoleOutput" />
+        </Exec>
+    </Target>
+
+    <Target Name="SetGitTreeDescription" BeforeTargets="InitializeSourceControlInformation">
+		<Exec Command="git describe --always --dirty" ConsoleToMSBuild="True" IgnoreExitCode="False">
+			<Output PropertyName="GitTreeDescription" TaskParameter="ConsoleOutput" />
+		</Exec>
+	</Target>
+
+	<Target Name="WriteTreeStatus" BeforeTargets="CoreGenerateAssemblyInfo">
+		<ItemGroup>
+			<AssemblyAttributes Include="System.Reflection.AssemblyMetadataAttribute">
+				<_Parameter1>git-tree-state</_Parameter1>
+				<_Parameter2>$(GitTreeDescription)</_Parameter2>
+			</AssemblyAttributes>
+            <AssemblyAttributes Include="System.Reflection.AssemblyMetadataAttribute">
+                <_Parameter1>git-revision-hash</_Parameter1>
+                <_Parameter2>$(SourceRevisionHash)</_Parameter2>
+            </AssemblyAttributes>
+		</ItemGroup>
+
+		<WriteCodeFragment AssemblyAttributes="@(AssemblyAttributes)" Language="C#" OutputDirectory="$(IntermediateOutputPath)" OutputFile="GitAssemblyInfo.cs">
+			<Output TaskParameter="OutputFile" ItemName="Compile" />
+		</WriteCodeFragment>
+	</Target>
+
+</Project>

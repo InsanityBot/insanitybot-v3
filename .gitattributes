@@ -1,0 +1,4 @@
+*.json linguist-language=json5
+*.json linguist-detectable
+
+*.targets linguist-detectable
