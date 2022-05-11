@@ -8,26 +8,26 @@
     </Target>
 
     <Target Name="SetGitTreeDescription" BeforeTargets="InitializeSourceControlInformation">
-		<Exec Command="git describe --always --dirty" ConsoleToMSBuild="True" IgnoreExitCode="False">
-			<Output PropertyName="GitTreeDescription" TaskParameter="ConsoleOutput" />
-		</Exec>
-	</Target>
+        <Exec Command="git describe --always --dirty" ConsoleToMSBuild="True" IgnoreExitCode="False">
+            <Output PropertyName="GitTreeDescription" TaskParameter="ConsoleOutput" />
+        </Exec>
+    </Target>
 
-	<Target Name="WriteTreeStatus" BeforeTargets="CoreGenerateAssemblyInfo">
-		<ItemGroup>
-			<AssemblyAttributes Include="System.Reflection.AssemblyMetadataAttribute">
-				<_Parameter1>git-tree-state</_Parameter1>
-				<_Parameter2>$(GitTreeDescription)</_Parameter2>
-			</AssemblyAttributes>
+    <Target Name="WriteTreeStatus" BeforeTargets="CoreGenerateAssemblyInfo">
+        <ItemGroup>
+            <AssemblyAttributes Include="System.Reflection.AssemblyMetadataAttribute">
+                <_Parameter1>git-tree-state</_Parameter1>
+                <_Parameter2>$(GitTreeDescription)</_Parameter2>
+            </AssemblyAttributes>
             <AssemblyAttributes Include="System.Reflection.AssemblyMetadataAttribute">
                 <_Parameter1>git-revision-hash</_Parameter1>
                 <_Parameter2>$(SourceRevisionHash)</_Parameter2>
             </AssemblyAttributes>
-		</ItemGroup>
+        </ItemGroup>
 
-		<WriteCodeFragment AssemblyAttributes="@(AssemblyAttributes)" Language="C#" OutputDirectory="$(IntermediateOutputPath)" OutputFile="GitAssemblyInfo.cs">
-			<Output TaskParameter="OutputFile" ItemName="Compile" />
-		</WriteCodeFragment>
-	</Target>
+        <WriteCodeFragment AssemblyAttributes="@(AssemblyAttributes)" Language="C#" OutputDirectory="$(IntermediateOutputPath)" OutputFile="GitAssemblyInfo.cs">
+            <Output TaskParameter="OutputFile" ItemName="Compile" />
+        </WriteCodeFragment>
+    </Target>
 
 </Project>

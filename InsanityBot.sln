@@ -3,24 +3,43 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InsanityBot", "InsanityBot\InsanityBot.csproj", "{1962FFFE-D437-4C2B-8B02-DD77898896DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InsanityBot", "InsanityBot\InsanityBot.csproj", "{1962FFFE-D437-4C2B-8B02-DD77898896DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InsanityBot.Core", "InsanityBot.Core\InsanityBot.Core.csproj", "{4AE2C159-BA04-498F-A891-A727F442C5D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InsanityBot.Core", "InsanityBot.Core\InsanityBot.Core.csproj", "{4AE2C159-BA04-498F-A891-A727F442C5D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InsanityBot.Extensions.Permissions", "InsanityBot.Extensions.Permissions\InsanityBot.Extensions.Permissions.csproj", "{939E831A-A699-426F-9A0C-16B7717468D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InsanityBot.Extensions.Permissions", "InsanityBot.Extensions.Permissions\InsanityBot.Extensions.Permissions.csproj", "{939E831A-A699-426F-9A0C-16B7717468D6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{4AE2C159-BA04-498F-A891-A727F442C5D3} = {4AE2C159-BA04-498F-A891-A727F442C5D3}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InsanityBot.Extensions.Datafixers", "InsanityBot.Extensions.Datafixers\InsanityBot.Extensions.Datafixers.csproj", "{5B598208-4DE6-4D46-A59E-BC99151A719D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InsanityBot.Extensions.Datafixers", "InsanityBot.Extensions.Datafixers\InsanityBot.Extensions.Datafixers.csproj", "{5B598208-4DE6-4D46-A59E-BC99151A719D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InsanityBot.Extensions", "InsanityBot.Extensions\InsanityBot.Extensions.csproj", "{0E58351A-2A17-40CD-A514-904D0A5F2940}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InsanityBot.Extensions", "InsanityBot.Extensions\InsanityBot.Extensions.csproj", "{0E58351A-2A17-40CD-A514-904D0A5F2940}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InsanityBot.Extensions.MessageServices", "InsanityBot.Extensions.MessageServices\InsanityBot.Extensions.MessageServices.csproj", "{7EC7D801-C951-47B5-9AC4-C0C61A4468A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InsanityBot.Extensions.MessageServices", "InsanityBot.Extensions.MessageServices\InsanityBot.Extensions.MessageServices.csproj", "{7EC7D801-C951-47B5-9AC4-C0C61A4468A8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{915C9877-B127-475C-BFAB-33B4E80D5F00}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{4E6E783C-8387-49D5-9825-BEFFD5736C55}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dev", "Dev", "{703AD795-B612-430A-963E-D67F63B3E4EC}"
+	ProjectSection(SolutionItems) = preProject
+		config\dev\permissions.json = config\dev\permissions.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Release", "Release", "{7BCD5576-2E67-42F6-A5DA-AF84DAE1AC79}"
+	ProjectSection(SolutionItems) = preProject
+		config\release\permissions.json = config\release\permissions.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Items", "Build Items", "{FC9C0733-27DA-43F2-AD79-261C0BA92E4A}"
+	ProjectSection(SolutionItems) = preProject
+		BundleConfigs.targets = BundleConfigs.targets
+		BundleGitInfo.targets = BundleGitInfo.targets
+		InsanityBot.targets = InsanityBot.targets
 	EndProjectSection
 EndProject
 Global
@@ -56,6 +75,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{703AD795-B612-430A-963E-D67F63B3E4EC} = {4E6E783C-8387-49D5-9825-BEFFD5736C55}
+		{7BCD5576-2E67-42F6-A5DA-AF84DAE1AC79} = {4E6E783C-8387-49D5-9825-BEFFD5736C55}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {97EAD6C8-7409-4FB5-8DBB-98A084256D5C}

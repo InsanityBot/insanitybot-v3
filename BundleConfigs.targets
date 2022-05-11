@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project InitialTargets="CreateConfigFolder" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-   <!-- Creates the configuration folder. -->
+    <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+        <_CopyItems Include="../config/dev/*.*"/>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Configuration)' == 'Release'">
+        <_CopyItems Include="../config/release/*.*"/>
+    </ItemGroup>
+
+    <!-- Creates the configuration folder. -->
     <Target Name="CreateConfigFolder">
-        <MakeDir Directories="../config"/>
+        <MakeDir Directories="$(OutputPath)/config"/>
     </Target>
 
     <!-- Copies dev configurations into the folder they are expected to be by the compiler. -->
@@ -11,8 +19,8 @@
             Condition="'$(Configuration)' == 'Debug'"
             BeforeTargets="InitializeSourceControlInformation">
         <Copy
-            SourceFiles="./config/dev/*.json"
-            DestinationFolder="../config"
+            SourceFiles="@(_CopyItems)"
+            DestinationFolder="$(OutputPath)/config"
         />
         <Delete Files="./config/dev/*.*"/>
         <Delete Files="./config/release/*.*"/>
@@ -23,8 +31,8 @@
             Condition="'$(Configuration)' == 'Release'"
             BeforeTargets="InitializeSourceControlInformation">
         <Copy
-            SourceFiles="./config/release/*.json"
-            DestinationFolder="../config"
+            SourceFiles="@(_CopyItems)"
+            DestinationFolder="$(OutputPath)/config"
         />
         <Delete Files="./config/dev/*.*"/>
         <Delete Files="./config/release/*.*"/>
