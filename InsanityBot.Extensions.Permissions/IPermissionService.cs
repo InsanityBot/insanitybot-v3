@@ -1,6 +1,4 @@
 namespace InsanityBot.Extensions.Permissions;
-
-public class PermissionService
+public interface IPermissionService
 {
-
 }

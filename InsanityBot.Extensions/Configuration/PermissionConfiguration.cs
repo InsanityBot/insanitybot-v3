@@ -13,19 +13,19 @@ public class PermissionConfiguration : IConfiguration
 
     public PermissionConfiguration(ILogger<IConfiguration> logger)
     {
-        logger.LogInformation(LoggerEventIds.PermissionConfigurationLoading, "Loading permission configuration from disk...");
+        logger.LogDebug(LoggerEventIds.PermissionConfigurationLoading, "Loading permission configuration from disk...");
 
         StreamReader reader = new("./config/permissions.json");
 
         JsonDocument fullFile = JsonDocument.Parse(reader.ReadToEnd());
 
-        this.Configuration = fullFile.SelectElement("configuration") ?? new();
-        this.DataVersion = fullFile.SelectElement("data_version")?.ToString() ?? String.Empty;
-
         // TODO: backup config handling
         // TODO: Datafixer calls
 
-        logger.LogInformation(LoggerEventIds.PermissionConfigurationSuccess, "Successfully loaded permission configuration");
+        this.Configuration = fullFile.SelectElement("configuration") ?? new();
+        this.DataVersion = fullFile.SelectElement("data_version")?.ToString() ?? String.Empty;
+
+        logger.LogDebug(LoggerEventIds.PermissionConfigurationSuccess, "Successfully loaded permission configuration");
     }
 }
 

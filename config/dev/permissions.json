@@ -1,0 +1,12 @@
+{
+    "data_version": "3.0.0.1",
+    "configuration": {
+        "insanitybot.permissions": {
+            "default": {
+                "always_preload_default": true,
+                "always_keep_default_loaded": true,
+                "cache_default": true
+            }
+        }
+    }
+}
