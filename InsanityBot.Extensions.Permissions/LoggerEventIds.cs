@@ -14,4 +14,6 @@ internal static class LoggerEventIds
     public static readonly EventId RolePermissionCached = new(5021, "PermissionService");
     public static readonly EventId RolePermissionLoadingFailed = new(5031, "PermissionService");
     public static readonly EventId RolePermissionUpdateFailed = new(5041, "PermissionService");
+    public static readonly EventId RolePermissionUpdated = new(5051, "PermissionService");
+    public static readonly EventId RolePermissionEdited = new(5061, "PermissionService");
 }

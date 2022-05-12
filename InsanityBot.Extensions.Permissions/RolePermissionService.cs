@@ -60,6 +60,8 @@ public class RolePermissionService
             return permissions;
         }
 
+        this.__logger?.LogTrace(LoggerEventIds.RolePermissionLoading, "Loading role permissions for role {id}...", id);
+
         if(File.Exists($"./data/permissions/{id}.json"))
         {
             StreamReader reader = new($"./data/permissions/{id}.json");
@@ -67,6 +69,7 @@ public class RolePermissionService
             try
             {
                 permissions = JsonSerializer.Deserialize(reader.ReadToEnd(), PermissionSerializationContexts.Default.Role)!;
+                reader.Close();
             }
             catch(Exception e)
             {
@@ -75,8 +78,21 @@ public class RolePermissionService
                 return null;
             }
 
-            reader.Close();
-            return updatePermissions(permissions);
+            this.__logger?.LogTrace(LoggerEventIds.RolePermissionLoaded, "Loaded role permissions for role {id}.", id);
+
+            permissions = updatePermissions(permissions);
+
+            this.__cache.GetOrCreate(
+                CacheKeyHelper.GetRolePermissionKey(permissions.SnowflakeIdentifier),
+                entry =>
+                {
+                    entry.SlidingExpiration = this.__sliding_expiration;
+                    return permissions;
+                });
+
+            this.__logger?.LogTrace(LoggerEventIds.RolePermissionCached, "Cached role permissions for role {id}.", id);
+
+            return permissions;
         }
         else
         {
@@ -149,6 +165,13 @@ public class RolePermissionService
                 entry.SlidingExpiration = this.__sliding_expiration;
                 return permissions;
             });
+
+        writer.Close();
+
+        this.__logger?.LogDebug(
+            LoggerEventIds.RolePermissionUpdated,
+            "Updated role permissions for role {id}",
+            permissions.SnowflakeIdentifier);
     }
 
     private RolePermissions updatePermissions(RolePermissions permissions)
@@ -205,6 +228,8 @@ public class RolePermissionService
         {
             return;
         }
+
+        this.__logger?.LogDebug(LoggerEventIds.RolePermissionLoading, "Pre-loading role permissions...");
 
         // load them now
         RolePermissions[] permissions;
@@ -268,6 +293,8 @@ public class RolePermissionService
             }
         }
 
+        this.__logger?.LogInformation(LoggerEventIds.RolePermissionLoaded, "Successfully pre-loaded role permissions.");
+
         // and now cache them
 
         foreach(RolePermissions role in permissions)
@@ -276,5 +303,7 @@ public class RolePermissionService
                 .SetValue(role)
                 .SetSlidingExpiration(this.__sliding_expiration);
         }
+
+        this.__logger?.LogDebug(LoggerEventIds.RolePermissionCached, "Successfully cached pre-loaded role permissions.");
     }
 }
