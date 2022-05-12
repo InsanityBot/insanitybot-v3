@@ -6,16 +6,16 @@ using System.Text.Json;
 
 using Microsoft.Extensions.Logging;
 
-public class PermissionConfiguration : IConfiguration
+public class UnsafeConfiguration : IConfiguration
 {
     public JsonElement Configuration { get; set; }
     public String DataVersion { get; set; }
 
-    public PermissionConfiguration(ILogger<IConfiguration> logger)
+    public UnsafeConfiguration(ILogger<IConfiguration> logger)
     {
-        logger.LogDebug(LoggerEventIds.PermissionConfigurationLoading, "Loading permission configuration from disk...");
+        logger.LogDebug(LoggerEventIds.UnsafeConfigurationLoading, "Loading unsafe configuration from disk...");
 
-        StreamReader reader = new("./config/permissions.json");
+        StreamReader reader = new("./config/unsafe.json");
 
         JsonDocument fullFile = JsonDocument.Parse(reader.ReadToEnd(), new JsonDocumentOptions()
         {
@@ -28,7 +28,6 @@ public class PermissionConfiguration : IConfiguration
         this.Configuration = fullFile.SelectElement("configuration") ?? new();
         this.DataVersion = fullFile.SelectElement("data_version")?.ToString() ?? String.Empty;
 
-        logger.LogDebug(LoggerEventIds.PermissionConfigurationSuccess, "Successfully loaded permission configuration");
+        logger.LogDebug(LoggerEventIds.UnsafeConfigurationSuccess, "Successfully loaded unsafe configuration");
     }
 }
-

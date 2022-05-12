@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <Import Project="../BundleConfigs.targets"/>
-    <Import Project="../BundleGitInfo.targets"/>
-    <Import Project="../InsanityBot.targets"/>
+    <Import Project="../BundleConfigs.targets" />
+    <Import Project="../BundleGitInfo.targets" />
+    <Import Project="../InsanityBot.targets" />
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -14,6 +14,14 @@
         <None Include="../config/*.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InsanityBot.Core\InsanityBot.Core.csproj" />
+      <ProjectReference Include="..\InsanityBot.Extensions.Datafixers\InsanityBot.Extensions.Datafixers.csproj" />
+      <ProjectReference Include="..\InsanityBot.Extensions.MessageServices\InsanityBot.Extensions.MessageServices.csproj" />
+      <ProjectReference Include="..\InsanityBot.Extensions.Permissions\InsanityBot.Extensions.Permissions.csproj" />
+      <ProjectReference Include="..\InsanityBot.Extensions\InsanityBot.Extensions.csproj" />
     </ItemGroup>
 
 </Project>

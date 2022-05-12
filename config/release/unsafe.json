@@ -1,0 +1,26 @@
+/* 
+ * THIS CONFIGURATION IS UNSAFE.
+ * NO OPTION SHOULD BE TREATED AS STABLE OR SAFE.
+ *
+ * It is entirely possible that any option found in here can cause problems,
+ * ranging from crashes or general instability to data corruption. Memory leaks,
+ * excessive disk usage and excessive CPU load are also not out of the question.
+ * 
+ * If you edit this file, we trust that you have received the usual lecture about
+ * safety from your administrators, and that you understand that you must tread
+ * with utmost caution. Even then:
+ * EDIT AT YOUR OWN RISK.
+*/
+
+{
+    "data_version": "3.0.0.1-release",
+    "configuration": {
+        "insanitybot": {
+            "permissions": {
+                "roles": {
+                    "preload_roles_parallelized": false
+                }
+            }
+        }
+    }
+}

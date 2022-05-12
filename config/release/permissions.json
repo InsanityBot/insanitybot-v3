@@ -7,6 +7,13 @@
                 "always_keep_default_loaded": true,
                 "cache_default": true,
                 "cache_expiration": "01:00:00"
+            },
+            "roles": {
+                "always_preload_all_roles": false,
+                "preload_roles": [],
+                "always_keep_roles_loaded": false,
+                "cache_roles": true,
+                "cache_expiration": "01:00:00"
             }
         }
     }
