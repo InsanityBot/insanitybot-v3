@@ -79,6 +79,36 @@ public class DefaultPermissionService
         this.__logger?.LogDebug(LoggerEventIds.DefaultPermissionEdited, "Edited default permissions");
     }
 
+    public DefaultPermissions CreateDefaultPermissions(PermissionManifest manifest)
+    {
+        DefaultPermissions permissions = new();
+
+        foreach(PermissionManifestEntry entry in manifest.Manifest)
+        {
+            permissions.Permissions.Add(
+                entry.Permission,
+                entry.Value switch
+                {
+                    true => PermissionValue.Allowed,
+                    false => PermissionValue.Denied
+                });
+        }
+
+        this.__cache.GetOrCreate(
+            CacheKeyHelper.GetDefaultPermissionKey(),
+            entry =>
+            {
+                entry.SlidingExpiration = this.__sliding_expiration;
+                return permissions;
+            });
+
+        this.__logger?.LogDebug(LoggerEventIds.DefaultPermissionCached, "Cached newly created default permissions");
+
+        this.WriteDefaultPermissions(permissions);
+
+        return permissions;
+    }
+
     private DefaultPermissions? loadAndCachePermissions()
     {
         this.__logger?.LogDebug(LoggerEventIds.DefaultPermissionLoading, "Loading default permissions...");
