@@ -22,7 +22,6 @@ public class RolePermissionService
     private readonly DefaultPermissionService __defaults;
 
     private readonly TimeSpan __sliding_expiration;
-    private readonly Boolean __cache_role_permissions;
 
     public RolePermissionService
     (
@@ -38,19 +37,13 @@ public class RolePermissionService
         this.__configuration = configuration;
         this.__unsafe_configuration = unsafeConfiguration;
         this.__defaults = defaults;
+        this.__sliding_expiration =
+            this.__configuration.Value<Boolean>("insanitybot.permissions.roles.always_keep_roles_loaded")
+            ? TimeSpan.MaxValue
+            : TimeSpan.Parse(this.__configuration.Value<String>("insanitybot.permissions.roles.cache_expiration")!);
 
-        this.__cache_role_permissions = this.__configuration.Value<Boolean>(
-            "insanitybot.permissions.roles.cache_roles");
+        preloadRoles();
 
-        if(this.__cache_role_permissions)
-        {
-            this.__sliding_expiration =
-                this.__configuration.Value<Boolean>("insanitybot.permissions.roles.always_keep_roles_loaded")
-                ? TimeSpan.MaxValue
-                : TimeSpan.Parse(this.__configuration.Value<String>("insanitybot.permissions.roles.cache_expiration")!);
-
-            preloadRoles();
-        }
     }
 
     public RolePermissions? GetRolePermissions(UInt64 id, Boolean bypassCache = false)

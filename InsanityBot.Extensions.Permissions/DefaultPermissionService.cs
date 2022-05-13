@@ -33,10 +33,7 @@ public class DefaultPermissionService
                 ? TimeSpan.MaxValue
                 : TimeSpan.Parse(this.__configuration.Value<String>("insanitybot.permissions.default.cache_expiration")!);
 
-        if(this.__configuration.Value<Boolean>("insanitybot.permissions.default.always_preload_default"))
-        {
-            this.loadAndCachePermissions();
-        }
+        this.loadAndCachePermissions();
     }
 
     public DefaultPermissions? GetDefaultPermissions(Boolean bypassCache = false)
