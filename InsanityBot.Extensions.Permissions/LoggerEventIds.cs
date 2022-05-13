@@ -8,6 +8,7 @@ internal static class LoggerEventIds
     public static readonly EventId DefaultPermissionLoaded = new(5010, "PermissionService");
     public static readonly EventId DefaultPermissionCached = new(5020, "PermissionService");
     public static readonly EventId DefaultPermissionLoadingFailed = new(5030, "PermissionService");
+    public static readonly EventId DefaultPermissionEdited = new(5060, "PermissionService");
 
     public static readonly EventId RolePermissionLoading = new(5001, "PermissionService");
     public static readonly EventId RolePermissionLoaded = new(5011, "PermissionService");

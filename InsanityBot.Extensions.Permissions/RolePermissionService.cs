@@ -169,8 +169,8 @@ public class RolePermissionService
         writer.Close();
 
         this.__logger?.LogDebug(
-            LoggerEventIds.RolePermissionUpdated,
-            "Updated role permissions for role {id}",
+            LoggerEventIds.RolePermissionEdited,
+            "Edited role permissions for role {id}",
             permissions.SnowflakeIdentifier);
     }
 
@@ -293,7 +293,7 @@ public class RolePermissionService
             }
         }
 
-        this.__logger?.LogInformation(LoggerEventIds.RolePermissionLoaded, "Successfully pre-loaded role permissions.");
+        this.__logger?.LogDebug(LoggerEventIds.RolePermissionLoaded, "Successfully pre-loaded role permissions.");
 
         // and now cache them
 

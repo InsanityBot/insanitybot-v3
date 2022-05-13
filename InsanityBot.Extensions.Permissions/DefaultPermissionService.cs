@@ -16,6 +16,8 @@ public class DefaultPermissionService
     private readonly IMemoryCache __cache;
     private readonly IConfiguration __configuration;
 
+    private readonly TimeSpan __sliding_expiration;
+
     public DefaultPermissionService
     (
         ILogger<IPermissionService>? logger,
@@ -26,6 +28,10 @@ public class DefaultPermissionService
         this.__logger = logger;
         this.__cache = cache;
         this.__configuration = configuration;
+
+        __sliding_expiration = this.__configuration.Value<Boolean>("insanitybot.permissions.default.always_keep_default_loaded")
+                ? TimeSpan.MaxValue
+                : TimeSpan.Parse(this.__configuration.Value<String>("insanitybot.permissions.default.cache_expiration")!);
 
         if(this.__configuration.Value<Boolean>("insanitybot.permissions.default.always_preload_default"))
         {
@@ -43,6 +49,34 @@ public class DefaultPermissionService
         }
 
         return loadAndCachePermissions();
+    }
+
+    public void WriteDefaultPermissions(DefaultPermissions permissions)
+    {
+        StreamWriter writer;
+
+        if(!File.Exists("./data/permissions/default.json"))
+        {
+            writer = new(File.Create("./data/permissions/default.json"));
+        }
+        else
+        {
+            writer = new("./data/permissions/default.json");
+        }
+
+        writer.Write(JsonSerializer.Serialize(permissions, PermissionSerializationContexts.Default.DefaultPermissions));
+
+        this.__cache.GetOrCreate(
+            CacheKeyHelper.GetDefaultPermissionKey(),
+            entry =>
+            {
+                entry.SlidingExpiration = this.__sliding_expiration;
+                return permissions;
+            });
+
+        writer.Close();
+
+        this.__logger?.LogDebug(LoggerEventIds.DefaultPermissionEdited, "Edited default permissions");
     }
 
     private DefaultPermissions? loadAndCachePermissions()
@@ -72,13 +106,9 @@ public class DefaultPermissionService
         if(permissions is not null &&
             this.__configuration.Value<Boolean>("insanitybot.permissions.default.cache_default"))
         {
-            TimeSpan expiration = this.__configuration.Value<Boolean>("insanitybot.permissions.default.always_keep_default_loaded")
-                ? TimeSpan.MaxValue
-                : TimeSpan.Parse(this.__configuration.Value<String>("insanitybot.permissions.default.cache_expiration")!);
-
             this.__cache.CreateEntry(CacheKeyHelper.GetDefaultPermissionKey())
                 .SetValue(permissions)
-                .SetSlidingExpiration(expiration);
+                .SetSlidingExpiration(__sliding_expiration);
 
             this.__logger?.LogDebug(LoggerEventIds.DefaultPermissionCached, "Enregistered default permissions into cache.");
         }
