@@ -94,14 +94,6 @@ public class DefaultPermissionService
                 });
         }
 
-        this.__cache.GetOrCreate(
-            CacheKeyHelper.GetDefaultPermissionKey(),
-            entry =>
-            {
-                entry.SlidingExpiration = this.__sliding_expiration;
-                return permissions;
-            });
-
         this.__logger?.LogDebug(LoggerEventIds.DefaultPermissionCached, "Cached newly created default permissions");
 
         this.WriteDefaultPermissions(permissions);
