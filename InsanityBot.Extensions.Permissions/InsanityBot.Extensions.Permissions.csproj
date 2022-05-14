@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    
+
+    <Import Project="../BundleGitInfo.targets"/>
     <Import Project="../InsanityBot.targets"/>
 
     <PropertyGroup>

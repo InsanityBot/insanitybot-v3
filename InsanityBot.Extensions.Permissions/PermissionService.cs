@@ -3,6 +3,9 @@ namespace InsanityBot.Extensions.Permissions;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -14,7 +17,6 @@ using Microsoft.Extensions.Logging;
 
 using Remora.Discord.API.Abstractions.Objects;
 using Remora.Discord.API.Abstractions.Rest;
-using Remora.Discord.API.Objects;
 using Remora.Results;
 
 public class PermissionService : IPermissionService
@@ -24,6 +26,7 @@ public class PermissionService : IPermissionService
     private readonly IConfiguration __configuration;
 
     private readonly IDiscordRestGuildAPI __guild_api;
+    private readonly HttpClient __http_client;
 
     private readonly DefaultPermissionService __default_permission_service;
     private readonly RolePermissionService __role_permission_service;
@@ -38,6 +41,7 @@ public class PermissionService : IPermissionService
         IMemoryCache cache,
         PermissionConfiguration configuration,
         IDiscordRestGuildAPI guildAPI,
+        HttpClient httpClient,
         DefaultPermissionService defaultService,
         RolePermissionService roleService,
         UserPermissionService userService
@@ -47,6 +51,7 @@ public class PermissionService : IPermissionService
         this.__cache = cache;
         this.__configuration = configuration;
         this.__guild_api = guildAPI;
+        this.__http_client = httpClient;
         this.__default_permission_service = defaultService;
         this.__role_permission_service = roleService;
         this.__user_permission_service = userService;
@@ -224,12 +229,13 @@ public class PermissionService : IPermissionService
     {
         if(!File.Exists("./config/permissions/permissions.manifest"))
         {
-            this.__logger.LogError(
+            this.__logger.LogWarning(
                 LoggerEventIds.PermissionManifestMissing,
-                "Missing permission manifest file, setup could not complete.");
+                "Missing permission manifest file, downloading from the source tree instead.");
 
-            return null!;
-            // todo: fetching logic
+            this.fetchFileFromSourceTree(
+                "https://raw.githubusercontent.com/InsanityBot/insanitybot-v3/{commit}/config/permissions/permissions.manifest",
+                "./config/permissions/permissions.manifest");
         }
 
         StreamReader reader = new("./config/permissions/permissions.manifest");
@@ -241,12 +247,19 @@ public class PermissionService : IPermissionService
         }
         catch
         {
-            this.__logger.LogError(
+            this.__logger.LogWarning(
                 LoggerEventIds.PermissionManifestMissing,
-                "Invalid permission manifest file, setup could not complete.");
+                "Invalid permission manifest file, downloading from the source tree instead.");
 
-            return null!;
-            // todo: fetching logic
+            reader.Close();
+
+            this.fetchFileFromSourceTree(
+                "https://raw.githubusercontent.com/InsanityBot/insanitybot-v3/{commit}/config/permissions/permissions.manifest",
+                "./config/permissions/permissions.manifest");
+
+            reader = new("./config/permissions/permissions.manifest");
+
+            manifest = JsonSerializer.Deserialize(reader.ReadToEnd(), PermissionSerializationContexts.Default.Manifest)!;
         }
 
         this.__cache.CreateEntry(CacheKeyHelper.GetManifestKey())
@@ -260,12 +273,13 @@ public class PermissionService : IPermissionService
     {
         if(!File.Exists("./config/permissions/permissions.mapping"))
         {
-            this.__logger.LogError(
+            this.__logger.LogWarning(
                 LoggerEventIds.PermissionManifestMissing,
-                "Missing permission mapping file, setup could not complete.");
+                "Missing permission mapping file, downloading from the source tree instead.");
 
-            return null!;
-            // todo: fetching logic
+            this.fetchFileFromSourceTree(
+                "https://raw.githubusercontent.com/InsanityBot/insanitybot-v3/{commit}/config/permissions/permissions.mapping",
+                "./config/permissions/permissions.mapping");
         }
 
         StreamReader reader = new("./config/permissions/permissions.mapping");
@@ -277,12 +291,19 @@ public class PermissionService : IPermissionService
         }
         catch
         {
-            this.__logger.LogError(
+            this.__logger.LogWarning(
                 LoggerEventIds.PermissionMappingMissing,
-                "Invalid permission mapping file, setup could not complete.");
+                "Invalid permission mapping file, downloading from the source tree instead.");
 
-            return null!;
-            // todo: fetching logic
+            reader.Close();
+
+            this.fetchFileFromSourceTree(
+                "https://raw.githubusercontent.com/InsanityBot/insanitybot-v3/{commit}/config/permissions/permissions.mapping",
+                "./config/permissions/permissions.mapping");
+
+            reader = new("./config/permissions/permissions.mapping");
+
+            mapping = JsonSerializer.Deserialize(reader.ReadToEnd(), PermissionSerializationContexts.Default.Mapping)!;
         }
 
         this.__cache.CreateEntry(CacheKeyHelper.GetMappingKey())
@@ -290,6 +311,28 @@ public class PermissionService : IPermissionService
             .SetAbsoluteExpiration(TimeSpan.MaxValue);
 
         return mapping;
+    }
+
+    private async void fetchFileFromSourceTree(String treeLink, String filename)
+    {
+        String commitHash = Assembly.GetExecutingAssembly()
+            .GetCustomAttributes<AssemblyMetadataAttribute>()
+            .Where(xm => xm.Key == "git-revision-hash")
+            .First()
+            .Value!;
+
+        Task<HttpResponseMessage> download = this.__http_client.GetAsync(treeLink.Replace("{commit}", commitHash));
+
+        if(File.Exists(filename))
+        {
+            File.Delete(filename);
+        }
+
+        FileStream fileStream = File.Create(filename);
+
+        (await (await download).Content.ReadAsStreamAsync()).CopyTo(fileStream);
+
+        fileStream.Flush();
     }
     #endregion
 }
