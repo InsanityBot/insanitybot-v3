@@ -167,6 +167,24 @@ public class RolePermissionService
             permissions.SnowflakeIdentifier);
     }
 
+    public RolePermissions CreateRolePermissions(UInt64 snowflake)
+    {
+        // only called after we ensured defaults were present
+        DefaultPermissions defaultPermissions = this.__defaults.GetDefaultPermissions()!;
+
+        RolePermissions permissions = new()
+        {
+            IsAdministrator = defaultPermissions.IsAdministrator,
+            Permissions = defaultPermissions.Permissions,
+            UpdateGuid = defaultPermissions.UpdateGuid,
+            SnowflakeIdentifier = snowflake
+        };
+
+        this.WriteRolePermissions(permissions);
+
+        return permissions;
+    }
+
     private RolePermissions updatePermissions(RolePermissions permissions)
     {
         DefaultPermissions defaultPermissions = this.__defaults.GetDefaultPermissions()!;

@@ -157,6 +157,25 @@ public class UserPermissionService
             permissions.SnowflakeIdentifier);
     }
 
+    public UserPermissions CreateUserPermissions(UInt64 snowflake)
+    {
+
+        // only called after we ensured defaults were present
+        DefaultPermissions defaultPermissions = this.__defaults.GetDefaultPermissions()!;
+
+        UserPermissions permissions = new()
+        {
+            IsAdministrator = defaultPermissions.IsAdministrator,
+            Permissions = defaultPermissions.Permissions,
+            UpdateGuid = defaultPermissions.UpdateGuid,
+            SnowflakeIdentifier = snowflake
+        };
+
+        this.WriteUserPermissions(permissions);
+
+        return permissions;
+    }
+
     private UserPermissions updatePermissions(UserPermissions permissions)
     {
         DefaultPermissions defaultPermissions = this.__defaults.GetDefaultPermissions()!;

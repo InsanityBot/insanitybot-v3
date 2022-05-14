@@ -91,9 +91,39 @@ public class DefaultPermissionService
                 });
         }
 
+        this.WriteDefaultPermissions(permissions);
+
         this.__logger?.LogDebug(LoggerEventIds.DefaultPermissionCached, "Cached newly created default permissions");
 
+        return permissions;
+    }
+
+    public DefaultPermissions UpdateDefaultPermissions(PermissionManifest manifest)
+    {
+        DefaultPermissions permissions = this.GetDefaultPermissions()!;
+
+        if(permissions == null)
+        {
+            return this.CreateDefaultPermissions(manifest);
+        }
+
+        foreach(PermissionManifestEntry entry in manifest.Manifest)
+        {
+            if(!permissions.Permissions.ContainsKey(entry.Permission))
+            {
+                permissions.Permissions.Add(
+                entry.Permission,
+                entry.Value switch
+                {
+                    true => PermissionValue.Allowed,
+                    false => PermissionValue.Denied
+                });
+            }
+        }
+
         this.WriteDefaultPermissions(permissions);
+
+        this.__logger?.LogDebug(LoggerEventIds.DefaultPermissionCached, "Cached newly created default permissions");
 
         return permissions;
     }

@@ -25,4 +25,9 @@ internal static class LoggerEventIds
     public static readonly EventId UserPermissionUpdateFailed = new(5042, "PermissionService");
     public static readonly EventId UserPermissionUpdated = new(5052, "PermissionService");
     public static readonly EventId UserPermissionEdited = new(5062, "PermissionService");
+
+    public static readonly EventId PermissionsInitializing = new(5100, "PermissionService");
+    public static readonly EventId PermissionsInitialized = new(5101, "PermissionService");
+    public static readonly EventId PermissionManifestMissing = new(5102, "PermissionService");
+    public static readonly EventId PermissionMappingMissing = new(5103, "PermissionService");
 }
