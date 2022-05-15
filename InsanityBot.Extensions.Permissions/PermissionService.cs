@@ -394,6 +394,16 @@ public class PermissionService : IPermissionService
             mapping = JsonSerializer.Deserialize(reader.ReadToEnd(), PermissionSerializationContexts.Default.Mapping)!;
         }
 
+        if(!mapping.PermitComplexMapping)
+        {
+            mapping.ComplexMapping = new();
+
+            foreach(KeyValuePair<String, DiscordPermissions> map in mapping.Mapping!)
+            {
+                mapping.ComplexMapping.Add(map.Key, new DiscordPermissions[] { map.Value });
+            }
+        }
+
         this.__cache.CreateEntry(CacheKeyHelper.GetMappingKey())
             .SetValue(mapping)
             .SetAbsoluteExpiration(TimeSpan.MaxValue);
