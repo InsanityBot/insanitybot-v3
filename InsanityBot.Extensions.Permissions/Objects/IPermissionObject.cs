@@ -9,7 +9,7 @@ public interface IPermissionObject
 
     public Boolean IsAdministrator { get; set; }
 
-    public UInt64 SnowflakeIdentifier { get; set; }
+    public Int64 SnowflakeIdentifier { get; set; }
 
     public Guid UpdateGuid { get; set; }
 }

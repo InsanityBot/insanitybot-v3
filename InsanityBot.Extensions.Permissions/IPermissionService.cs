@@ -6,71 +6,71 @@ using System.Threading.Tasks;
 
 using InsanityBot.Extensions.Permissions.Objects;
 
-using Remora.Discord.API.Abstractions.Objects;
-using Remora.Results;
+using Starnight.Internal.Entities.Guilds;
+using Starnight.Internal.Entities.Users;
 
 public interface IPermissionService
 {
     // ---- lower-level capability ---- //
 
     public ValueTask<DefaultPermissions> GetDefaultPermissions();
-    public ValueTask<Result<RolePermissions>> GetRolePermissions(IPartialRole role);
-    public ValueTask<Result<UserPermissions>> GetUserPermissions(IPartialUser user);
+    public ValueTask<RolePermissions> GetRolePermissions(DiscordRole role);
+    public ValueTask<UserPermissions> GetUserPermissions(DiscordUser user);
 
     public ValueTask SetDefaultPermissions(DefaultPermissions defaultPermissions);
     public ValueTask SetRolePermissions(RolePermissions rolePermissions);
     public ValueTask SetUserPermissions(UserPermissions userPermissions);
            
-    public ValueTask<IResult> CreateRolePermissions(IPartialRole role);
+    public ValueTask CreateRolePermissions(DiscordRole role);
     public ValueTask CreateRolePermissions(RolePermissions permissions);
-    public ValueTask<IResult> CreateUserPermissions(IPartialUser user);
+    public ValueTask CreateUserPermissions(DiscordUser user);
     public ValueTask CreateUserPermissions(UserPermissions permissions);
 
 
     // ---- higher-level capability ---- //
 
-    public ValueTask<IResult> RemapPermissions(IEnumerable<IPartialRole> roles);
-    public ValueTask<IResult> RemapPermissions(IPartialGuild guild);
+    public ValueTask RemapPermissions(IEnumerable<DiscordRole> roles);
+    public ValueTask RemapPermissions(DiscordGuild guild);
 
-    public ValueTask<Result<Boolean>> CheckPermission(IPartialUser user, String permission);
-    public ValueTask<Result<Boolean>> CheckPermission(IPartialRole role, String permission);
-    public ValueTask<Result<Boolean>> CheckAnyPermission(IPartialUser user, IEnumerable<String> permissions);
-    public ValueTask<Result<Boolean>> CheckAnyPermission(IPartialRole role, IEnumerable<String> permissions);
-    public ValueTask<Result<Boolean>> CheckAllPermissions(IPartialUser user, IEnumerable<String> permissions);
-    public ValueTask<Result<Boolean>> CheckAllPermissions(IPartialRole role, IEnumerable<String> permissions);
+    public ValueTask<Boolean> CheckPermission(DiscordUser user, String permission);
+    public ValueTask<Boolean> CheckPermission(DiscordRole role, String permission);
+    public ValueTask<Boolean> CheckAnyPermission(DiscordUser user, IEnumerable<String> permissions);
+    public ValueTask<Boolean> CheckAnyPermission(DiscordRole role, IEnumerable<String> permissions);
+    public ValueTask<Boolean> CheckAllPermissions(DiscordUser user, IEnumerable<String> permissions);
+    public ValueTask<Boolean> CheckAllPermissions(DiscordRole role, IEnumerable<String> permissions);
 
-    public ValueTask<IResult> GrantPermission(IPartialUser user, String permission);
-    public ValueTask<IResult> GrantPermission(IPartialRole role, String permission);
-    public ValueTask<IResult> GrantPermissions(IPartialUser user, IEnumerable<String> permissions);
-    public ValueTask<IResult> GrantPermissions(IPartialRole user, IEnumerable<String> permissions);
+    public ValueTask GrantPermission(DiscordUser user, String permission);
+    public ValueTask GrantPermission(DiscordRole role, String permission);
+    public ValueTask GrantPermissions(DiscordUser user, IEnumerable<String> permissions);
+    public ValueTask GrantPermissions(DiscordRole user, IEnumerable<String> permissions);
 
-    public ValueTask<IResult> RevokePermission(IPartialUser user, String permission);
-    public ValueTask<IResult> RevokePermission(IPartialRole role, String permission);
-    public ValueTask<IResult> RevokePermissions(IPartialUser user, IEnumerable<String> permissions);
-    public ValueTask<IResult> RevokePermissions(IPartialRole user, IEnumerable<String> permissions);
+    public ValueTask RevokePermission(DiscordUser user, String permission);
+    public ValueTask RevokePermission(DiscordRole role, String permission);
+    public ValueTask RevokePermissions(DiscordUser user, IEnumerable<String> permissions);
+    public ValueTask RevokePermissions(DiscordRole user, IEnumerable<String> permissions);
 
-    public ValueTask<IResult> UseFallback(IPartialUser user, String permission);
-    public ValueTask<IResult> UseFallback(IPartialRole role, String permission);
-    public ValueTask<IResult> UseFallbacks(IPartialUser user, IEnumerable<String> permissions);
-    public ValueTask<IResult> UseFallbacks(IPartialRole user, IEnumerable<String> permissions);
+    public ValueTask UseFallback(DiscordUser user, String permission);
+    public ValueTask UseFallback(DiscordRole role, String permission);
+    public ValueTask UseFallbacks(DiscordUser user, IEnumerable<String> permissions);
+    public ValueTask UseFallbacks(DiscordRole user, IEnumerable<String> permissions);
 
-    public ValueTask<IResult> SetAdministrator(IPartialUser user, Boolean administrator);
-    public ValueTask<IResult> SetAdministrator(IPartialRole role, Boolean administrator);
+    public ValueTask SetAdministrator(DiscordUser user, Boolean administrator);
+    public ValueTask SetAdministrator(DiscordRole role, Boolean administrator);
 
-    public ValueTask<IResult> SetParent(IPartialUser user, UInt64 parent);
-    public ValueTask<IResult> SetParent(IPartialRole role, UInt64 parent);
-    public ValueTask<IResult> SetParents(IPartialUser user, IEnumerable<UInt64> parent);
-    public ValueTask<IResult> SetParents(IPartialRole role, IEnumerable<UInt64> parent);
+    public ValueTask SetParent(DiscordUser user, UInt64 parent);
+    public ValueTask SetParent(DiscordRole role, UInt64 parent);
+    public ValueTask SetParents(DiscordUser user, IEnumerable<UInt64> parent);
+    public ValueTask SetParents(DiscordRole role, IEnumerable<UInt64> parent);
 
-    public ValueTask<IResult> RestoreDefaults(IPartialUser user);
-    public ValueTask<IResult> RestoreDefaults(IPartialRole role);
+    public ValueTask RestoreDefaults(DiscordUser user);
+    public ValueTask RestoreDefaults(DiscordRole role);
     public ValueTask RestoreManifestDefaults();
 
 
     // ---- safety capability ---- //
 
-    public ValueTask<IResult> EnsureDefaultFileIntegrity();
-    public ValueTask<IResult> EnsureFileIntegrity();
-    public ValueTask<IResult> EnsureFileIntegrity(IPartialUser user);
-    public ValueTask<IResult> EnsureFileIntegrity(IPartialRole role);
+    public ValueTask EnsureDefaultFileIntegrity();
+    public ValueTask EnsureFileIntegrity();
+    public ValueTask EnsureFileIntegrity(DiscordUser user);
+    public ValueTask EnsureFileIntegrity(DiscordRole role);
 }

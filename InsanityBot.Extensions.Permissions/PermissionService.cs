@@ -15,9 +15,10 @@ using InsanityBot.Extensions.Permissions.Objects;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
-using Remora.Discord.API.Abstractions.Objects;
-using Remora.Discord.API.Abstractions.Rest;
-using Remora.Results;
+using Starnight.Internal.Entities;
+using Starnight.Internal.Entities.Guilds;
+using Starnight.Internal.Entities.Users;
+using Starnight.Internal.Rest.Resources;
 
 public class PermissionService : IPermissionService
 {
@@ -25,7 +26,7 @@ public class PermissionService : IPermissionService
     private readonly IMemoryCache __cache;
     private readonly IConfiguration __configuration;
 
-    private readonly IDiscordRestGuildAPI __guild_api;
+    private readonly DiscordGuildRestResource __guild_resource;
     private readonly HttpClient __http_client;
 
     private readonly DefaultPermissionService __default_permission_service;
@@ -40,7 +41,7 @@ public class PermissionService : IPermissionService
         ILogger<IPermissionService> logger,
         IMemoryCache cache,
         PermissionConfiguration configuration,
-        IDiscordRestGuildAPI guildAPI,
+        DiscordGuildRestResource guildResource,
         HttpClient httpClient,
         DefaultPermissionService defaultService,
         RolePermissionService roleService,
@@ -50,7 +51,7 @@ public class PermissionService : IPermissionService
         this.__logger = logger;
         this.__cache = cache;
         this.__configuration = configuration;
-        this.__guild_api = guildAPI;
+        this.__guild_resource = guildResource;
         this.__http_client = httpClient;
         this.__default_permission_service = defaultService;
         this.__role_permission_service = roleService;
@@ -58,18 +59,18 @@ public class PermissionService : IPermissionService
 
         this.__logger.LogInformation(LoggerEventIds.PermissionsInitializing, "Initializing permission subsystem...");
 
-        if(!this.__cache.TryGetValue(CacheKeyHelper.GetManifestKey(), out PermissionManifest manifest))
+        if(!this.__cache.TryGetValue(CacheKeyHelper.GetManifestKey(), out PermissionManifest? manifest))
         {
             manifest = this.loadManifest();
         }
 
-        if(!this.__cache.TryGetValue(CacheKeyHelper.GetMappingKey(), out PermissionMapping mapping))
+        if(!this.__cache.TryGetValue(CacheKeyHelper.GetMappingKey(), out PermissionMapping? mapping))
         {
             mapping = this.loadMappings();
         }
 
-        this.__manifest = manifest;
-        this.__mapping = mapping;
+        this.__manifest = manifest!;
+        this.__mapping = mapping!;
 
         this.__logger.LogInformation(LoggerEventIds.PermissionsInitialized, "The permission subsystem was successfully initialized.");
     }
@@ -82,38 +83,18 @@ public class PermissionService : IPermissionService
             ?? this.__default_permission_service.CreateDefaultPermissions(this.__manifest));
     }
 
-    public ValueTask<Result<RolePermissions>> GetRolePermissions(IPartialRole role)
+    public ValueTask<RolePermissions> GetRolePermissions(DiscordRole role)
     {
-        if(!role.ID.HasValue)
-        {
-            return ValueTask.FromResult(
-                Result<RolePermissions>.FromError(
-                    new ArgumentNullError(
-                        nameof(role.ID),
-                        "A valid snowflake identifier is required to load role permissions.")));
-        }
-
         return ValueTask.FromResult(
-            Result<RolePermissions>.FromSuccess(
-                this.__role_permission_service.GetRolePermissions(role.ID.Value.Value)
-                ?? this.__role_permission_service.CreateRolePermissions(role.ID.Value.Value)));
+                this.__role_permission_service.GetRolePermissions(role.Id)
+                ?? this.__role_permission_service.CreateRolePermissions(role.Id));
     }
 
-    public ValueTask<Result<UserPermissions>> GetUserPermissions(IPartialUser user)
+    public ValueTask<UserPermissions> GetUserPermissions(DiscordUser user)
     {
-        if(!user.ID.HasValue)
-        {
-            return ValueTask.FromResult(
-                Result<UserPermissions>.FromError(
-                    new ArgumentNullError(
-                        nameof(user.ID),
-                        "A valid snowflake identifier is required to load user permissions.")));
-        }
-
         return ValueTask.FromResult(
-            Result<UserPermissions>.FromSuccess(
-                this.__user_permission_service.GetUserPermissions(user.ID.Value.Value)
-                ?? this.__user_permission_service.CreateUserPermissions(user.ID.Value.Value)));
+                this.__user_permission_service.GetUserPermissions(user.Id)
+                ?? this.__user_permission_service.CreateUserPermissions(user.Id));
     }
 
     public ValueTask SetDefaultPermissions(DefaultPermissions defaultPermissions)
@@ -137,39 +118,21 @@ public class PermissionService : IPermissionService
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask<IResult> CreateRolePermissions(IPartialRole role)
+    public ValueTask CreateRolePermissions(DiscordRole role)
     {
-        if(!role.ID.HasValue)
-        {
-            return ValueTask.FromResult(
-                (IResult)Result.FromError(
-                    new ArgumentNullError(
-                        nameof(role.ID),
-                        "A valid snowflake identifier is required to load role permissions.")));
-        }
+        this.__role_permission_service.CreateRolePermissions(role.Id);
 
-        this.__role_permission_service.CreateRolePermissions(role.ID.Value.Value);
-
-        return ValueTask.FromResult((IResult)Result.FromSuccess());
+        return ValueTask.CompletedTask;
     }
 
     public ValueTask CreateRolePermissions(RolePermissions permissions)
         => this.SetRolePermissions(permissions);
 
-    public ValueTask<IResult> CreateUserPermissions(IPartialUser user)
+    public ValueTask CreateUserPermissions(DiscordUser user)
     {
-        if(!user.ID.HasValue)
-        {
-            return ValueTask.FromResult(
-                (IResult)Result.FromError(
-                    new ArgumentNullError(
-                        nameof(user.ID),
-                        "A valid snowflake identifier is required to load user permissions.")));
-}
+        this.__user_permission_service.CreateUserPermissions(user.Id);
 
-        this.__user_permission_service.CreateUserPermissions(user.ID.Value.Value);
-
-        return ValueTask.FromResult((IResult)Result.FromSuccess());
+        return ValueTask.CompletedTask;
     }
 
     public ValueTask CreateUserPermissions(UserPermissions permissions)
@@ -178,50 +141,175 @@ public class PermissionService : IPermissionService
 
     // ---- higher-level capability ---- //
 
-    public ValueTask<IResult> RemapPermissions(IEnumerable<IPartialRole> roles);
-    public ValueTask<IResult> RemapPermissions(IPartialGuild guild);
+    public ValueTask RemapPermissions(IEnumerable<DiscordRole> roles)
+    {
+        foreach(DiscordRole role in roles)
+        {
+            RolePermissions permissions = this.__role_permission_service.GetRolePermissions(role.Id)
+                ?? this.__role_permission_service.CreateRolePermissions(role.Id);
 
-    public ValueTask<Result<Boolean>> CheckPermission(IPartialUser user, String permission);
-    public ValueTask<Result<Boolean>> CheckPermission(IPartialRole role, String permission);
-    public ValueTask<Result<Boolean>> CheckAnyPermission(IPartialUser user, IEnumerable<String> permissions);
-    public ValueTask<Result<Boolean>> CheckAnyPermission(IPartialRole role, IEnumerable<String> permissions);
-    public ValueTask<Result<Boolean>> CheckAllPermissions(IPartialUser user, IEnumerable<String> permissions);
-    public ValueTask<Result<Boolean>> CheckAllPermissions(IPartialRole role, IEnumerable<String> permissions);
+            if(this.__mapping.PermitComplexMapping)
+            {
+                foreach(String permission in permissions.Permissions.Keys)
+                {
+                    foreach(DiscordPermissions discordPermission in this.__mapping.ComplexMapping![permission])
+                    {
+                        if((role.Permissions & (Int64)discordPermission) != 0)
+                        {
+                            permissions.Permissions[permission] = PermissionValue.Allowed;
+                        }
+                    }
+                }
+            }
 
-    public ValueTask<IResult> GrantPermission(IPartialUser user, String permission);
-    public ValueTask<IResult> GrantPermission(IPartialRole role, String permission);
-    public ValueTask<IResult> GrantPermissions(IPartialUser user, IEnumerable<String> permissions);
-    public ValueTask<IResult> GrantPermissions(IPartialRole user, IEnumerable<String> permissions);
+            this.__role_permission_service.WriteRolePermissions(permissions);
+        }
 
-    public ValueTask<IResult> RevokePermission(IPartialUser user, String permission);
-    public ValueTask<IResult> RevokePermission(IPartialRole role, String permission);
-    public ValueTask<IResult> RevokePermissions(IPartialUser user, IEnumerable<String> permissions);
-    public ValueTask<IResult> RevokePermissions(IPartialRole user, IEnumerable<String> permissions);
+        return ValueTask.CompletedTask;
+    }
 
-    public ValueTask<IResult> UseFallback(IPartialUser user, String permission);
-    public ValueTask<IResult> UseFallback(IPartialRole role, String permission);
-    public ValueTask<IResult> UseFallbacks(IPartialUser user, IEnumerable<String> permissions);
-    public ValueTask<IResult> UseFallbacks(IPartialRole user, IEnumerable<String> permissions);
+    public async ValueTask RemapPermissions(DiscordGuild guild)
+    { 
+        IEnumerable<DiscordRole> roles = await this.__guild_resource.GetRolesAsync(guild.Id);
 
-    public ValueTask<IResult> SetAdministrator(IPartialUser user, Boolean administrator);
-    public ValueTask<IResult> SetAdministrator(IPartialRole role, Boolean administrator);
+        await this.RemapPermissions(roles);
+    }
 
-    public ValueTask<IResult> SetParent(IPartialUser user, UInt64 parent);
-    public ValueTask<IResult> SetParent(IPartialRole role, UInt64 parent);
-    public ValueTask<IResult> SetParents(IPartialUser user, IEnumerable<UInt64> parent);
-    public ValueTask<IResult> SetParents(IPartialRole role, IEnumerable<UInt64> parent);
+    public ValueTask<Boolean> CheckPermission(DiscordUser user, String permission)
+    {
+        throw new NotImplementedException();
+    }
 
-    public ValueTask<IResult> RestoreDefaults(IPartialUser user);
-    public ValueTask<IResult> RestoreDefaults(IPartialRole role);
-    public ValueTask RestoreManifestDefaults();
+    public ValueTask<Boolean> CheckPermission(DiscordRole role, String permission)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask<Boolean> CheckAnyPermission(DiscordUser user, IEnumerable<String> permissions)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask<Boolean> CheckAnyPermission(DiscordRole role, IEnumerable<String> permissions)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask<Boolean> CheckAllPermissions(DiscordUser user, IEnumerable<String> permissions)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask<Boolean> CheckAllPermissions(DiscordRole role, IEnumerable<String> permissions)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ValueTask GrantPermission(DiscordUser user, String permission)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask GrantPermission(DiscordRole role, String permission)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask GrantPermissions(DiscordUser user, IEnumerable<String> permissions)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask GrantPermissions(DiscordRole user, IEnumerable<String> permissions)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ValueTask RevokePermission(DiscordUser user, String permission)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask RevokePermission(DiscordRole role, String permission)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask RevokePermissions(DiscordUser user, IEnumerable<String> permissions)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask RevokePermissions(DiscordRole user, IEnumerable<String> permissions)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ValueTask UseFallback(DiscordUser user, String permission)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask UseFallback(DiscordRole role, String permission)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask UseFallbacks(DiscordUser user, IEnumerable<String> permissions)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask UseFallbacks(DiscordRole user, IEnumerable<String> permissions)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ValueTask SetAdministrator(DiscordUser user, Boolean administrator)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask SetAdministrator(DiscordRole role, Boolean administrator)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ValueTask SetParent(DiscordUser user, UInt64 parent)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask SetParent(DiscordRole role, UInt64 parent)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask SetParents(DiscordUser user, IEnumerable<UInt64> parent)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask SetParents(DiscordRole role, IEnumerable<UInt64> parent)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ValueTask RestoreDefaults(DiscordUser user)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask RestoreDefaults(DiscordRole role)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask RestoreManifestDefaults()
+    {
+        throw new NotImplementedException();
+    }
 
 
     // ---- safety capability ---- //
 
-    public ValueTask<IResult> EnsureDefaultFileIntegrity();
-    public ValueTask<IResult> EnsureFileIntegrity();
-    public ValueTask<IResult> EnsureFileIntegrity(IPartialUser user);
-    public ValueTask<IResult> EnsureFileIntegrity(IPartialRole role);
+    public ValueTask EnsureDefaultFileIntegrity()
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask EnsureFileIntegrity()
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask EnsureFileIntegrity(DiscordUser user)
+    {
+        throw new NotImplementedException();
+    }
+    public ValueTask EnsureFileIntegrity(DiscordRole role)
+    {
+        throw new NotImplementedException();
+    }
     #endregion
 
     #region internals - loading

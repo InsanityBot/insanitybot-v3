@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-using Remora.Discord.API.Abstractions.Objects;
+using Starnight.Internal.Entities;
 
 public record PermissionMapping
 {
@@ -12,8 +12,8 @@ public record PermissionMapping
     public Boolean PermitComplexMapping { get; set; } = false;
 
     [JsonPropertyName("simple_mapping")]
-    public Dictionary<String, DiscordPermission>? Mapping { get; set; } = new();
+    public Dictionary<String, DiscordPermissions>? Mapping { get; set; } = new();
 
     [JsonPropertyName("complex_mapping")]
-    public Dictionary<String, DiscordPermission[]>? ComplexMapping { get; set; } = new();
+    public Dictionary<String, DiscordPermissions[]>? ComplexMapping { get; set; } = new();
 }

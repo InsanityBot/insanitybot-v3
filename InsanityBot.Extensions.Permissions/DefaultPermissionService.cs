@@ -40,7 +40,7 @@ public class DefaultPermissionService
     {
         if(!bypassCache && this.__cache.TryGetValue(
             CacheKeyHelper.GetDefaultPermissionKey(),
-            out DefaultPermissions permissions))
+            out DefaultPermissions? permissions))
         {
             return permissions;
         }

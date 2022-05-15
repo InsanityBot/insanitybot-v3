@@ -16,7 +16,7 @@ public record UserPermissions : IPermissionObject
     public Boolean IsAdministrator { get; set; } = false;
 
     [JsonPropertyName("snowflake")]
-    public UInt64 SnowflakeIdentifier { get; set; } = 0;
+    public Int64 SnowflakeIdentifier { get; set; } = 0;
 
     [JsonPropertyName("update_guid")]
     public Guid UpdateGuid { get; set; } = Guid.Empty;

@@ -46,9 +46,9 @@ public class RolePermissionService
 
     }
 
-    public RolePermissions? GetRolePermissions(UInt64 id, Boolean bypassCache = false)
+    public RolePermissions? GetRolePermissions(Int64 id, Boolean bypassCache = false)
     {
-        if(!bypassCache && this.__cache.TryGetValue(CacheKeyHelper.GetRolePermissionKey(id), out RolePermissions permissions))
+        if(!bypassCache && this.__cache.TryGetValue(CacheKeyHelper.GetRolePermissionKey(id), out RolePermissions? permissions))
         {
             return permissions;
         }
@@ -93,7 +93,7 @@ public class RolePermissionService
         }
     }
 
-    public Boolean VerifyRolePermissionExistence(UInt64 id, Boolean verifyValidity = false, Boolean cacheIfValid = false)
+    public Boolean VerifyRolePermissionExistence(Int64 id, Boolean verifyValidity = false, Boolean cacheIfValid = false)
     {
         if(!File.Exists($"./data/permissions/{id}.json"))
         {
@@ -167,7 +167,7 @@ public class RolePermissionService
             permissions.SnowflakeIdentifier);
     }
 
-    public RolePermissions CreateRolePermissions(UInt64 snowflake)
+    public RolePermissions CreateRolePermissions(Int64 snowflake)
     {
         // only called after we ensured defaults were present
         DefaultPermissions defaultPermissions = this.__defaults.GetDefaultPermissions()!;
@@ -219,14 +219,14 @@ public class RolePermissionService
     private void preloadRoles()
     {
         List<String> filenames;
-        UInt64[] roles;
+        Int64[] roles;
 
         if(this.__configuration.Value<Boolean>("insanitybot.permissions.roles.always_preload_all_roles"))
         {
             filenames = Directory.GetFiles("./data/permissions").ToList();
             filenames.Remove(Path.GetFullPath("./data/permissions/default.json"));
         }
-        else if((roles = this.__configuration.Value<UInt64[]>("insanitybot.permissions.roles.preload_roles")!).Length != 0)
+        else if((roles = this.__configuration.Value<Int64[]>("insanitybot.permissions.roles.preload_roles")!).Length != 0)
         {
             filenames = new();
 
