@@ -2,10 +2,12 @@ namespace InsanityBot.Extensions.Permissions;
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -26,7 +28,7 @@ public class PermissionService : IPermissionService
     private readonly IMemoryCache __cache;
     private readonly IConfiguration __configuration;
 
-    private readonly DiscordGuildRestResource __guild_resource;
+    private readonly DiscordGuildsRestResource __guild_resource;
     private readonly HttpClient __http_client;
 
     private readonly DefaultPermissionService __default_permission_service;
@@ -35,13 +37,14 @@ public class PermissionService : IPermissionService
 
     private readonly PermissionManifest __manifest;
     private readonly PermissionMapping __mapping;
+    private readonly IReadOnlyList<String> __permissions;
 
     public PermissionService
     (
         ILogger<IPermissionService> logger,
         IMemoryCache cache,
         PermissionConfiguration configuration,
-        DiscordGuildRestResource guildResource,
+        DiscordGuildsRestResource guildResource,
         HttpClient httpClient,
         DefaultPermissionService defaultService,
         RolePermissionService roleService,
@@ -71,6 +74,8 @@ public class PermissionService : IPermissionService
 
         this.__manifest = manifest!;
         this.__mapping = mapping!;
+
+        this.__permissions = this.extractPermissions();
 
         this.__logger.LogInformation(LoggerEventIds.PermissionsInitialized, "The permission subsystem was successfully initialized.");
     }
@@ -154,7 +159,7 @@ public class PermissionService : IPermissionService
                 {
                     foreach(DiscordPermissions discordPermission in this.__mapping.ComplexMapping![permission])
                     {
-                        if((role.Permissions & (Int64)discordPermission) != 0)
+                        if((role.Permissions & discordPermission) != 0)
                         {
                             permissions.Permissions[permission] = PermissionValue.Allowed;
                         }
@@ -175,9 +180,22 @@ public class PermissionService : IPermissionService
         await this.RemapPermissions(roles);
     }
 
-    public ValueTask<Boolean> CheckPermission(DiscordUser user, String permission)
+    public async ValueTask<Boolean> CheckPermission(DiscordUser user, String permission)
     {
-        throw new NotImplementedException();
+        IEnumerable<String> resolved = this.resolveWildcards(permission);
+
+        UserPermissions permissions = await this.GetUserPermissions(user);
+
+        IEnumerable<Boolean> results = resolved
+            .AsParallel()
+            .Select(xm => this.checkSinglePermission(permissions, xm))
+            .Distinct();
+
+        return results.Count() switch
+        {
+            1 => results.First(),
+            _ => false
+        };
     }
 
     public ValueTask<Boolean> CheckPermission(DiscordRole role, String permission)
@@ -450,6 +468,94 @@ public class PermissionService : IPermissionService
         (await (await download).Content.ReadAsStreamAsync()).CopyTo(fileStream);
 
         fileStream.Flush();
+    }
+
+    private IReadOnlyList<String> extractPermissions()
+    {
+        return this.__manifest.Manifest
+            .Select(xm => xm.Permission)
+            .ToImmutableList();
+    }
+    #endregion
+
+    #region internals - wildcard handling
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    private IEnumerable<String> resolveWildcards(String source)
+    {
+        // you have to contain at least one wildcard for us to filter wildcards
+        if(!source.AsSpan().Contains('*'))
+        {
+            return new String[] { source };
+        }
+
+        List<String> resolved = new(this.__permissions);
+        String[] parts = source.Split('.');
+
+        for(Int32 i = 0; i < parts.Length; i++)
+        {
+            if(parts[i] == "*")
+            {
+                continue;
+            }
+
+            resolved = resolved
+                .Where(xm => xm.StartsWith(String.Concat(parts[0..i])))
+                .ToList();
+        }
+
+        return resolved;
+    }
+    #endregion
+
+    #region internals - permission checks
+    private Boolean checkSinglePermission(UserPermissions permissions, String permission)
+    {
+        PermissionValue immediateValue = permissions.Permissions[permission];
+
+        if(immediateValue == PermissionValue.Allowed)
+        {
+            return true;
+        }
+        else if(immediateValue == PermissionValue.Denied)
+        {
+            return false;
+        }
+
+        List<Int64> roles = permissions.AssignedRoles.ToList();
+
+        for(Int32 i = 0; i < roles.Count; i++)
+        {
+            RolePermissions role = this.__role_permission_service.GetRolePermissions(roles[i])!;
+
+            if(role == null)
+            {
+                continue;
+            }
+
+            PermissionValue roleValue = role.Permissions[permission];
+
+            if(roleValue == PermissionValue.Allowed)
+            {
+                return true;
+            }
+            else if(roleValue == PermissionValue.Denied)
+            {
+                return false;
+            }
+
+            roles.AddRange(role.Parents);
+            roles = roles.Distinct().ToList();
+        }
+
+        DefaultPermissions defaults = this.__default_permission_service.GetDefaultPermissions()
+            ?? this.__default_permission_service.CreateDefaultPermissions(this.__manifest);
+
+        return defaults.Permissions[permission] switch
+        {
+            PermissionValue.Allowed => true,
+            PermissionValue.Denied => true,
+            _ => defaults.FallbackDefault
+        };
     }
     #endregion
 }

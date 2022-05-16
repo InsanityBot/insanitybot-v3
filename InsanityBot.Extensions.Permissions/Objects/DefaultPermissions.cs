@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 public record DefaultPermissions : IPermissionObject
 {
     [JsonPropertyName("fallback_default")]
-    public PermissionValue FallbackDefault { get; set; }
+    public Boolean FallbackDefault { get; set; }
 
     [JsonPropertyName("permissions")]
     public Dictionary<String, PermissionValue> Permissions { get; set; } = new();

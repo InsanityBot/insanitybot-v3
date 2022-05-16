@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 public record UserPermissions : IPermissionObject
 {
     [JsonPropertyName("assigned_roles")]
-    public UInt64[] AssignedRoles { get; set; } = Array.Empty<UInt64>();
+    public Int64[] AssignedRoles { get; set; } = Array.Empty<Int64>();
 
     [JsonPropertyName("permissions")]
     public Dictionary<String, PermissionValue> Permissions { get; set; } = new();
