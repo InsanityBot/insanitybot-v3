@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <Import Project="../BundleConfigs.targets" />
     <Import Project="../BundlePermissions.targets"/>
@@ -13,6 +13,9 @@
 
     <ItemGroup>
         <None Include="../config/*.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="../config/permissions/*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
