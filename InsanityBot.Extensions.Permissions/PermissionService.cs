@@ -11,7 +11,6 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-using InsanityBot.Extensions.Configuration;
 using InsanityBot.Extensions.Permissions.Objects;
 
 using Microsoft.Extensions.Caching.Memory;
