@@ -11,18 +11,14 @@
             "roles": {
                 "always_preload_all_roles": false,
                 "preload_roles": [],
-                "always_keep_roles_loaded": false,
+                "always_keep_roles_loaded": true,
                 "cache_roles": true,
                 "cache_expiration": "01:00:00"
             },
             "users": {
                 "always_keep_users_loaded": false,
                 "cache_users": true,
-                "cache_expiration": "00:30:00",
-                "role_dependent_caching": false,
-                "role_data": {
-                    // "id": {"cache": boolean, "cache_expiration": "timespan"}
-                }
+                "cache_expiration": "00:30:00"
             }
         }
     }

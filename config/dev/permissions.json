@@ -18,11 +18,7 @@
             "users": {
                 "always_keep_users_loaded": false,
                 "cache_users": true,
-                "cache_expiration": "00:01:00",
-                "role_dependent_caching": false,
-                "role_data": {
-                    // "id": {"cache": boolean, "cache_expiration": "timespan"}
-                }
+                "cache_expiration": "00:01:00"
             }
         }
     }
