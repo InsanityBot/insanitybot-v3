@@ -478,13 +478,18 @@ public class PermissionService : IPermissionService
         await this.SetRolePermissions(perm);
     }
 
-    public ValueTask SetAdministrator(DiscordUser user, Boolean administrator)
+    public async ValueTask SetAdministrator(DiscordUser user, Boolean administrator)
     {
-        throw new NotImplementedException();
+        UserPermissions permissions = await this.GetUserPermissions(user);
+        permissions.IsAdministrator = administrator;
+        await this.SetUserPermissions(permissions);
     }
-    public ValueTask SetAdministrator(DiscordRole role, Boolean administrator)
+
+    public async ValueTask SetAdministrator(DiscordRole role, Boolean administrator)
     {
-        throw new NotImplementedException();
+        RolePermissions permissions = await this.GetRolePermissions(role);
+        permissions.IsAdministrator = administrator;
+        await this.SetRolePermissions(permissions);
     }
 
     public ValueTask SetParent(DiscordUser user, UInt64 parent)
