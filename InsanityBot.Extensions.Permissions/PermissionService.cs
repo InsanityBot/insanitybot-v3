@@ -26,7 +26,6 @@ public class PermissionService : IPermissionService
 {
     private readonly ILogger<IPermissionService> __logger;
     private readonly IMemoryCache __cache;
-    private readonly IConfiguration __configuration;
 
     private readonly DiscordGuildsRestResource __guild_resource;
     private readonly HttpClient __http_client;
@@ -43,7 +42,6 @@ public class PermissionService : IPermissionService
     (
         ILogger<IPermissionService> logger,
         IMemoryCache cache,
-        PermissionConfiguration configuration,
         DiscordGuildsRestResource guildResource,
         HttpClient httpClient,
         DefaultPermissionService defaultService,
@@ -53,7 +51,6 @@ public class PermissionService : IPermissionService
     {
         this.__logger = logger;
         this.__cache = cache;
-        this.__configuration = configuration;
         this.__guild_resource = guildResource;
         this.__http_client = httpClient;
         this.__default_permission_service = defaultService;
