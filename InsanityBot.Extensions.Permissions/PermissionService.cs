@@ -422,24 +422,60 @@ public class PermissionService : IPermissionService
         await this.SetRolePermissions(perm);
     }
 
-    public ValueTask UseFallback(DiscordUser user, String permission)
+    public async ValueTask UseFallback(DiscordUser user, String permission)
     {
-        throw new NotImplementedException();
+        UserPermissions permissions = await this.GetUserPermissions(user);
+
+        foreach(String s in this.resolveWildcards(permission))
+        {
+            permissions.Permissions[s] = PermissionValue.Passthrough;
+        }
+
+        await this.SetUserPermissions(permissions);
     }
 
-    public ValueTask UseFallback(DiscordRole role, String permission)
+    public async ValueTask UseFallback(DiscordRole role, String permission)
     {
-        throw new NotImplementedException();
+        RolePermissions permissions = await this.GetRolePermissions(role);
+
+        foreach(String s in this.resolveWildcards(permission))
+        {
+            permissions.Permissions[s] = PermissionValue.Passthrough;
+        }
+
+        await this.SetRolePermissions(permissions);
     }
 
-    public ValueTask UseFallbacks(DiscordUser user, IEnumerable<String> permissions)
+    public async ValueTask UseFallbacks(DiscordUser user, IEnumerable<String> permissions)
     {
-        throw new NotImplementedException();
+        UserPermissions perm = await this.GetUserPermissions(user);
+
+        IEnumerable<String> resolvedPermissions = permissions
+            .SelectMany(this.resolveWildcards)
+            .Distinct();
+
+        foreach(String s in resolvedPermissions)
+        {
+            perm.Permissions[s] = PermissionValue.Passthrough;
+        }
+
+        await this.SetUserPermissions(perm);
     }
 
-    public ValueTask UseFallbacks(DiscordRole user, IEnumerable<String> permissions)
+    public async ValueTask UseFallbacks(DiscordRole role, IEnumerable<String> permissions)
     {
-        throw new NotImplementedException();
+        RolePermissions perm = await this.GetRolePermissions(role);
+
+        IEnumerable<String> resolvedPermissions = permissions
+            .SelectMany(this.resolveWildcards)
+            .Distinct();
+
+        foreach(String s in resolvedPermissions)
+        {
+            perm.Permissions[s] = PermissionValue.Passthrough;
+        }
+
+        await this.SetRolePermissions(perm);
     }
 
     public ValueTask SetAdministrator(DiscordUser user, Boolean administrator)
