@@ -3,6 +3,7 @@ namespace InsanityBot.Extensions.Permissions;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -271,19 +272,43 @@ public class PermissionService : IPermissionService
         return false;
     }
 
-    public ValueTask<Boolean> CheckAllPermissions(DiscordUser user, IEnumerable<String> permissions)
+    public async ValueTask<Boolean> CheckAllPermissions(DiscordUser user, IEnumerable<String> permissions)
     {
-        throw new NotImplementedException();
+        foreach(String permission in permissions)
+{
+            if(!await this.CheckPermission(user, permission))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
-    public ValueTask<Boolean> CheckAllPermissions(DiscordRole role, IEnumerable<String> permissions)
+    public async ValueTask<Boolean> CheckAllPermissions(DiscordRole role, IEnumerable<String> permissions)
     {
-        throw new NotImplementedException();
+        foreach(String permission in permissions)
+        {
+            if(!await this.CheckPermission(role, permission))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
-    public ValueTask<Boolean> CheckAllPermissions(DiscordGuildMember member, IEnumerable<String> permissions)
+    public async ValueTask<Boolean> CheckAllPermissions(DiscordGuildMember member, IEnumerable<String> permissions)
     {
-        throw new NotImplementedException();
+        foreach(String permission in permissions)
+        {
+            if(!await this.CheckPermission(member, permission))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public ValueTask GrantPermission(DiscordUser user, String permission)
