@@ -572,17 +572,19 @@ public class PermissionService : IPermissionService
         await this.SetRolePermissions(permissions);
     }
 
-    public ValueTask RestoreDefaults(DiscordUser user)
+    public async ValueTask RestoreDefaults(DiscordUser user)
     {
-        throw new NotImplementedException();
+        await this.SetUserPermissions(this.__user_permission_service.CreateUserPermissions(user.Id));
     }
-    public ValueTask RestoreDefaults(DiscordRole role)
+
+    public async ValueTask RestoreDefaults(DiscordRole role)
     {
-        throw new NotImplementedException();
+        await this.SetRolePermissions(this.__role_permission_service.CreateRolePermissions(role.Id));
     }
-    public ValueTask RestoreManifestDefaults()
+
+    public async ValueTask RestoreManifestDefaults()
     {
-        throw new NotImplementedException();
+        await this.SetDefaultPermissions(this.__default_permission_service.CreateDefaultPermissions(this.__manifest));
     }
 
 
