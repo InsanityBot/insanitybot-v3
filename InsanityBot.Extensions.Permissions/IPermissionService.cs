@@ -70,12 +70,4 @@ public interface IPermissionService
     public ValueTask RestoreDefaults(DiscordUser user);
     public ValueTask RestoreDefaults(DiscordRole role);
     public ValueTask RestoreManifestDefaults();
-
-
-    // ---- safety capability ---- //
-
-    public ValueTask EnsureDefaultFileIntegrity();
-    public ValueTask EnsureFileIntegrity();
-    public ValueTask EnsureFileIntegrity(DiscordUser user);
-    public ValueTask EnsureFileIntegrity(DiscordRole role);
 }

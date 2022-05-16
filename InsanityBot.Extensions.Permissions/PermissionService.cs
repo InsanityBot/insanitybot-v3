@@ -586,26 +586,6 @@ public class PermissionService : IPermissionService
     {
         await this.SetDefaultPermissions(this.__default_permission_service.CreateDefaultPermissions(this.__manifest));
     }
-
-
-    // ---- safety capability ---- //
-
-    public ValueTask EnsureDefaultFileIntegrity()
-    {
-        throw new NotImplementedException();
-    }
-    public ValueTask EnsureFileIntegrity()
-    {
-        throw new NotImplementedException();
-    }
-    public ValueTask EnsureFileIntegrity(DiscordUser user)
-    {
-        throw new NotImplementedException();
-    }
-    public ValueTask EnsureFileIntegrity(DiscordRole role)
-    {
-        throw new NotImplementedException();
-    }
     #endregion
 
     #region internals - loading
