@@ -34,10 +34,13 @@ public interface IPermissionService
 
     public ValueTask<Boolean> CheckPermission(DiscordUser user, String permission);
     public ValueTask<Boolean> CheckPermission(DiscordRole role, String permission);
+    public ValueTask<Boolean> CheckPermission(DiscordGuildMember member, String permission);
     public ValueTask<Boolean> CheckAnyPermission(DiscordUser user, IEnumerable<String> permissions);
     public ValueTask<Boolean> CheckAnyPermission(DiscordRole role, IEnumerable<String> permissions);
+    public ValueTask<Boolean> CheckAnyPermission(DiscordGuildMember member, IEnumerable<String> permissions);
     public ValueTask<Boolean> CheckAllPermissions(DiscordUser user, IEnumerable<String> permissions);
     public ValueTask<Boolean> CheckAllPermissions(DiscordRole role, IEnumerable<String> permissions);
+    public ValueTask<Boolean> CheckAllPermissions(DiscordGuildMember member, IEnumerable<String> permissions);
 
     public ValueTask GrantPermission(DiscordUser user, String permission);
     public ValueTask GrantPermission(DiscordRole role, String permission);

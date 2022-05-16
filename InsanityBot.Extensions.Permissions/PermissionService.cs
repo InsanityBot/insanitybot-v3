@@ -184,19 +184,38 @@ public class PermissionService : IPermissionService
     {
         throw new NotImplementedException();
     }
+
+    public ValueTask<Boolean> CheckPermission(DiscordGuildMember member, String permission)
+    {
+        throw new NotImplementedException();
+    }
+
     public ValueTask<Boolean> CheckAnyPermission(DiscordUser user, IEnumerable<String> permissions)
     {
         throw new NotImplementedException();
     }
+
     public ValueTask<Boolean> CheckAnyPermission(DiscordRole role, IEnumerable<String> permissions)
     {
         throw new NotImplementedException();
     }
+
+    public ValueTask<Boolean> CheckAnyPermission(DiscordGuildMember member, IEnumerable<String> permissions)
+    {
+        throw new NotImplementedException();
+    }
+
     public ValueTask<Boolean> CheckAllPermissions(DiscordUser user, IEnumerable<String> permissions)
     {
         throw new NotImplementedException();
     }
+
     public ValueTask<Boolean> CheckAllPermissions(DiscordRole role, IEnumerable<String> permissions)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ValueTask<Boolean> CheckAllPermissions(DiscordGuildMember member, IEnumerable<String> permissions)
     {
         throw new NotImplementedException();
     }
