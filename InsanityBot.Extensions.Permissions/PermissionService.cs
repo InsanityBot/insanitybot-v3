@@ -544,21 +544,32 @@ public class PermissionService : IPermissionService
         await this.SetRolePermissions(permissions);
     }
 
-    public ValueTask SetParent(DiscordUser user, UInt64 parent)
+    public async ValueTask SetParent(DiscordUser user, Int64 parent)
     {
-        throw new NotImplementedException();
+        UserPermissions permissions = await this.GetUserPermissions(user);
+        permissions.AssignedRoles = permissions.AssignedRoles.Append(parent).ToArray();
+        await this.SetUserPermissions(permissions);
     }
-    public ValueTask SetParent(DiscordRole role, UInt64 parent)
+
+    public async ValueTask SetParent(DiscordRole role, Int64 parent)
     {
-        throw new NotImplementedException();
+        RolePermissions permissions = await this.GetRolePermissions(role);
+        permissions.Parents = permissions.Parents.Append(parent).ToArray();
+        await this.SetRolePermissions(permissions);
     }
-    public ValueTask SetParents(DiscordUser user, IEnumerable<UInt64> parent)
+
+    public async ValueTask SetParents(DiscordUser user, IEnumerable<Int64> parent)
     {
-        throw new NotImplementedException();
+        UserPermissions permissions = await this.GetUserPermissions(user);
+        permissions.AssignedRoles = permissions.AssignedRoles.Concat(parent).ToArray();
+        await this.SetUserPermissions(permissions);
     }
-    public ValueTask SetParents(DiscordRole role, IEnumerable<UInt64> parent)
+
+    public async ValueTask SetParents(DiscordRole role, IEnumerable<Int64> parent)
     {
-        throw new NotImplementedException();
+        RolePermissions permissions = await this.GetRolePermissions(role);
+        permissions.Parents = permissions.Parents.Concat(parent).ToArray();
+        await this.SetRolePermissions(permissions);
     }
 
     public ValueTask RestoreDefaults(DiscordUser user)

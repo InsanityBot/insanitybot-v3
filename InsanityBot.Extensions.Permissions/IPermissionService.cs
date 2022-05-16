@@ -62,10 +62,10 @@ public interface IPermissionService
     public ValueTask SetAdministrator(DiscordUser user, Boolean administrator);
     public ValueTask SetAdministrator(DiscordRole role, Boolean administrator);
 
-    public ValueTask SetParent(DiscordUser user, UInt64 parent);
-    public ValueTask SetParent(DiscordRole role, UInt64 parent);
-    public ValueTask SetParents(DiscordUser user, IEnumerable<UInt64> parent);
-    public ValueTask SetParents(DiscordRole role, IEnumerable<UInt64> parent);
+    public ValueTask SetParent(DiscordUser user, Int64 parent);
+    public ValueTask SetParent(DiscordRole role, Int64 parent);
+    public ValueTask SetParents(DiscordUser user, IEnumerable<Int64> parent);
+    public ValueTask SetParents(DiscordRole role, IEnumerable<Int64> parent);
 
     public ValueTask RestoreDefaults(DiscordUser user);
     public ValueTask RestoreDefaults(DiscordRole role);
