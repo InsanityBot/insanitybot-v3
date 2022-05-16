@@ -232,19 +232,43 @@ public class PermissionService : IPermissionService
         });
     }
 
-    public ValueTask<Boolean> CheckAnyPermission(DiscordUser user, IEnumerable<String> permissions)
+    public async ValueTask<Boolean> CheckAnyPermission(DiscordUser user, IEnumerable<String> permissions)
     {
-        throw new NotImplementedException();
+        foreach(String permission in permissions)
+        {
+            if(await this.CheckPermission(user, permission))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public ValueTask<Boolean> CheckAnyPermission(DiscordRole role, IEnumerable<String> permissions)
+    public async ValueTask<Boolean> CheckAnyPermission(DiscordRole role, IEnumerable<String> permissions)
     {
-        throw new NotImplementedException();
+        foreach(String permission in permissions)
+        {
+            if(await this.CheckPermission(role, permission))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public ValueTask<Boolean> CheckAnyPermission(DiscordGuildMember member, IEnumerable<String> permissions)
+    public async ValueTask<Boolean> CheckAnyPermission(DiscordGuildMember member, IEnumerable<String> permissions)
     {
-        throw new NotImplementedException();
+        foreach(String permission in permissions)
+        {
+            if(await this.CheckPermission(member, permission))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public ValueTask<Boolean> CheckAllPermissions(DiscordUser user, IEnumerable<String> permissions)
