@@ -41,6 +41,8 @@ public interface IPermissionService
     public ValueTask<Boolean> CheckAllPermissions(DiscordUser user, IEnumerable<String> permissions);
     public ValueTask<Boolean> CheckAllPermissions(DiscordRole role, IEnumerable<String> permissions);
     public ValueTask<Boolean> CheckAllPermissions(DiscordGuildMember member, IEnumerable<String> permissions);
+    public ValueTask<Boolean> CheckAdministrator(DiscordUser user);
+    public ValueTask<Boolean> CheckAdministrator(DiscordRole role);
 
     public ValueTask GrantPermission(DiscordUser user, String permission);
     public ValueTask GrantPermission(DiscordRole role, String permission);

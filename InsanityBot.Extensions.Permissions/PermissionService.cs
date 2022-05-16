@@ -186,6 +186,11 @@ public class PermissionService : IPermissionService
 
         UserPermissions permissions = await this.GetUserPermissions(user);
 
+        if(permissions.IsAdministrator)
+        {
+            return true;
+        }
+
         IEnumerable<Boolean> results = resolved
             .AsParallel()
             .Select(xm => this.checkSinglePermission(permissions, xm))
@@ -203,6 +208,11 @@ public class PermissionService : IPermissionService
         IEnumerable<String> resolved = this.resolveWildcards(permission);
 
         RolePermissions permissions = await this.GetRolePermissions(role);
+
+        if(permissions.IsAdministrator)
+        {
+            return true;
+        }
 
         IEnumerable<Boolean> results = resolved
             .AsParallel()
@@ -234,6 +244,11 @@ public class PermissionService : IPermissionService
 
     public async ValueTask<Boolean> CheckAnyPermission(DiscordUser user, IEnumerable<String> permissions)
     {
+        if(await this.CheckAdministrator(user))
+        {
+            return true;
+        }
+
         foreach(String permission in permissions)
         {
             if(await this.CheckPermission(user, permission))
@@ -247,6 +262,11 @@ public class PermissionService : IPermissionService
 
     public async ValueTask<Boolean> CheckAnyPermission(DiscordRole role, IEnumerable<String> permissions)
     {
+        if(await this.CheckAdministrator(role))
+        {
+            return true;
+        }
+
         foreach(String permission in permissions)
         {
             if(await this.CheckPermission(role, permission))
@@ -260,6 +280,11 @@ public class PermissionService : IPermissionService
 
     public async ValueTask<Boolean> CheckAnyPermission(DiscordGuildMember member, IEnumerable<String> permissions)
     {
+        if(await this.CheckAdministrator(member.User!))
+        {
+            return true;
+        }
+
         foreach(String permission in permissions)
         {
             if(await this.CheckPermission(member, permission))
@@ -273,6 +298,11 @@ public class PermissionService : IPermissionService
 
     public async ValueTask<Boolean> CheckAllPermissions(DiscordUser user, IEnumerable<String> permissions)
     {
+        if(await this.CheckAdministrator(user))
+        {
+            return true;
+        }
+
         foreach(String permission in permissions)
 {
             if(!await this.CheckPermission(user, permission))
@@ -286,6 +316,11 @@ public class PermissionService : IPermissionService
 
     public async ValueTask<Boolean> CheckAllPermissions(DiscordRole role, IEnumerable<String> permissions)
     {
+        if(await this.CheckAdministrator(role))
+        {
+            return true;
+        }
+
         foreach(String permission in permissions)
         {
             if(!await this.CheckPermission(role, permission))
@@ -299,6 +334,11 @@ public class PermissionService : IPermissionService
 
     public async ValueTask<Boolean> CheckAllPermissions(DiscordGuildMember member, IEnumerable<String> permissions)
     {
+        if(await this.CheckAdministrator(member.User!))
+        {
+            return true;
+        }
+
         foreach(String permission in permissions)
         {
             if(!await this.CheckPermission(member, permission))
@@ -308,6 +348,18 @@ public class PermissionService : IPermissionService
         }
 
         return true;
+    }
+
+    public async ValueTask<Boolean> CheckAdministrator(DiscordUser user)
+    {
+        UserPermissions permissions = await this.GetUserPermissions(user);
+        return permissions.IsAdministrator;
+    }
+
+    public async ValueTask<Boolean> CheckAdministrator(DiscordRole role)
+    {
+        RolePermissions permissions = await this.GetRolePermissions(role);
+        return permissions.IsAdministrator;
     }
 
     public async ValueTask GrantPermission(DiscordUser user, String permission)
@@ -726,6 +778,11 @@ public class PermissionService : IPermissionService
                 continue;
             }
 
+            if(role.IsAdministrator)
+            {
+                return true;
+            }
+
             PermissionValue roleValue = role.Permissions[permission];
 
             if(roleValue == PermissionValue.Allowed)
@@ -776,6 +833,11 @@ public class PermissionService : IPermissionService
                 continue;
             }
 
+            if(role.IsAdministrator)
+            {
+                return true;
+            }
+
             PermissionValue roleValue = role.Permissions[permission];
 
             if(roleValue == PermissionValue.Allowed)
@@ -807,6 +869,11 @@ public class PermissionService : IPermissionService
         UserPermissions permissions = this.__user_permission_service.GetUserPermissions(member.User!.Id)
             ?? this.__user_permission_service.CreateUserPermissions(member.User!.Id);
 
+        if(permissions.IsAdministrator)
+        {
+            return true;
+        }
+
         PermissionValue immediateValue = permissions.Permissions[permission];
 
         if(immediateValue == PermissionValue.Allowed)
@@ -832,6 +899,11 @@ public class PermissionService : IPermissionService
             if(role == null)
             {
                 continue;
+            }
+
+            if(role.IsAdministrator)
+            {
+                return true;
             }
 
             PermissionValue roleValue = role.Permissions[permission];
