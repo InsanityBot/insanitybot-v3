@@ -198,14 +198,38 @@ public class PermissionService : IPermissionService
         };
     }
 
-    public ValueTask<Boolean> CheckPermission(DiscordRole role, String permission)
+    public async ValueTask<Boolean> CheckPermission(DiscordRole role, String permission)
     {
-        throw new NotImplementedException();
+        IEnumerable<String> resolved = this.resolveWildcards(permission);
+
+        RolePermissions permissions = await this.GetRolePermissions(role);
+
+        IEnumerable<Boolean> results = resolved
+            .AsParallel()
+            .Select(xm => this.checkSinglePermission(permissions, xm))
+            .Distinct();
+
+        return results.Count() switch
+        {
+            1 => results.First(),
+            _ => false
+        };
     }
 
     public ValueTask<Boolean> CheckPermission(DiscordGuildMember member, String permission)
     {
-        throw new NotImplementedException();
+        IEnumerable<String> resolved = this.resolveWildcards(permission);
+
+        IEnumerable<Boolean> results = resolved
+            .AsParallel()
+            .Select(xm => this.checkSinglePermission(member, xm))
+            .Distinct();
+
+        return ValueTask.FromResult(results.Count() switch
+        {
+            1 => results.First(),
+            _ => false
+        });
     }
 
     public ValueTask<Boolean> CheckAnyPermission(DiscordUser user, IEnumerable<String> permissions)
@@ -522,6 +546,114 @@ public class PermissionService : IPermissionService
         }
 
         List<Int64> roles = permissions.AssignedRoles.ToList();
+
+        for(Int32 i = 0; i < roles.Count; i++)
+        {
+            RolePermissions role = this.__role_permission_service.GetRolePermissions(roles[i])!;
+
+            if(role == null)
+            {
+                continue;
+            }
+
+            PermissionValue roleValue = role.Permissions[permission];
+
+            if(roleValue == PermissionValue.Allowed)
+            {
+                return true;
+            }
+            else if(roleValue == PermissionValue.Denied)
+            {
+                return false;
+            }
+
+            roles.AddRange(role.Parents);
+            roles = roles.Distinct().ToList();
+        }
+
+        DefaultPermissions defaults = this.__default_permission_service.GetDefaultPermissions()
+            ?? this.__default_permission_service.CreateDefaultPermissions(this.__manifest);
+
+        return defaults.Permissions[permission] switch
+        {
+            PermissionValue.Allowed => true,
+            PermissionValue.Denied => true,
+            _ => defaults.FallbackDefault
+        };
+    }
+
+    private Boolean checkSinglePermission(RolePermissions permissions, String permission)
+    {
+        PermissionValue immediateValue = permissions.Permissions[permission];
+
+        if(immediateValue == PermissionValue.Allowed)
+        {
+            return true;
+        }
+        else if(immediateValue == PermissionValue.Denied)
+        {
+            return false;
+        }
+
+        List<Int64> roles = permissions.Parents.ToList();
+
+        for(Int32 i = 0; i < roles.Count; i++)
+        {
+            RolePermissions role = this.__role_permission_service.GetRolePermissions(roles[i])!;
+
+            if(role == null)
+            {
+                continue;
+            }
+
+            PermissionValue roleValue = role.Permissions[permission];
+
+            if(roleValue == PermissionValue.Allowed)
+            {
+                return true;
+            }
+            else if(roleValue == PermissionValue.Denied)
+            {
+                return false;
+            }
+
+            roles.AddRange(role.Parents);
+            roles = roles.Distinct().ToList();
+        }
+
+        DefaultPermissions defaults = this.__default_permission_service.GetDefaultPermissions()
+            ?? this.__default_permission_service.CreateDefaultPermissions(this.__manifest);
+
+        return defaults.Permissions[permission] switch
+        {
+            PermissionValue.Allowed => true,
+            PermissionValue.Denied => true,
+            _ => defaults.FallbackDefault
+        };
+    }
+
+    private Boolean checkSinglePermission(DiscordGuildMember member, String permission)
+    {
+        UserPermissions permissions = this.__user_permission_service.GetUserPermissions(member.User!.Id)
+            ?? this.__user_permission_service.CreateUserPermissions(member.User!.Id);
+
+        PermissionValue immediateValue = permissions.Permissions[permission];
+
+        if(immediateValue == PermissionValue.Allowed)
+        {
+            return true;
+        }
+        else if(immediateValue == PermissionValue.Denied)
+        {
+            return false;
+        }
+
+        List<Int64> roles = permissions.AssignedRoles.ToList();
+
+        if(member.Roles != null)
+        {
+            roles.AddRange(member.Roles);
+        }
 
         for(Int32 i = 0; i < roles.Count; i++)
         {
