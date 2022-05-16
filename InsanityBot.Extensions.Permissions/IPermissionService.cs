@@ -45,17 +45,17 @@ public interface IPermissionService
     public ValueTask GrantPermission(DiscordUser user, String permission);
     public ValueTask GrantPermission(DiscordRole role, String permission);
     public ValueTask GrantPermissions(DiscordUser user, IEnumerable<String> permissions);
-    public ValueTask GrantPermissions(DiscordRole user, IEnumerable<String> permissions);
+    public ValueTask GrantPermissions(DiscordRole role, IEnumerable<String> permissions);
 
     public ValueTask RevokePermission(DiscordUser user, String permission);
     public ValueTask RevokePermission(DiscordRole role, String permission);
     public ValueTask RevokePermissions(DiscordUser user, IEnumerable<String> permissions);
-    public ValueTask RevokePermissions(DiscordRole user, IEnumerable<String> permissions);
+    public ValueTask RevokePermissions(DiscordRole role, IEnumerable<String> permissions);
 
     public ValueTask UseFallback(DiscordUser user, String permission);
     public ValueTask UseFallback(DiscordRole role, String permission);
     public ValueTask UseFallbacks(DiscordUser user, IEnumerable<String> permissions);
-    public ValueTask UseFallbacks(DiscordRole user, IEnumerable<String> permissions);
+    public ValueTask UseFallbacks(DiscordRole role, IEnumerable<String> permissions);
 
     public ValueTask SetAdministrator(DiscordUser user, Boolean administrator);
     public ValueTask SetAdministrator(DiscordRole role, Boolean administrator);

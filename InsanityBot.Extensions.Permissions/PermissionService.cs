@@ -3,7 +3,6 @@ namespace InsanityBot.Extensions.Permissions;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -311,21 +310,60 @@ public class PermissionService : IPermissionService
         return true;
     }
 
-    public ValueTask GrantPermission(DiscordUser user, String permission)
+    public async ValueTask GrantPermission(DiscordUser user, String permission)
     {
-        throw new NotImplementedException();
+        UserPermissions permissions = await this.GetUserPermissions(user);
+
+        foreach(String s in this.resolveWildcards(permission))
+        {
+            permissions.Permissions[s] = PermissionValue.Allowed;
+        }
+
+        await this.SetUserPermissions(permissions);
     }
-    public ValueTask GrantPermission(DiscordRole role, String permission)
+
+    public async ValueTask GrantPermission(DiscordRole role, String permission)
     {
-        throw new NotImplementedException();
+        RolePermissions permissions = await this.GetRolePermissions(role);
+
+        foreach(String s in this.resolveWildcards(permission))
+        {
+            permissions.Permissions[s] = PermissionValue.Allowed;
+        }
+
+        await this.SetRolePermissions(permissions);
     }
-    public ValueTask GrantPermissions(DiscordUser user, IEnumerable<String> permissions)
+
+    public async ValueTask GrantPermissions(DiscordUser user, IEnumerable<String> permissions)
     {
-        throw new NotImplementedException();
+        UserPermissions perm = await this.GetUserPermissions(user);
+
+        IEnumerable<String> resolvedPermissions = permissions
+            .SelectMany(this.resolveWildcards)
+            .Distinct();
+
+        foreach(String s in resolvedPermissions)
+        {
+            perm.Permissions[s] = PermissionValue.Allowed;
+        }
+
+        await this.SetUserPermissions(perm);
     }
-    public ValueTask GrantPermissions(DiscordRole user, IEnumerable<String> permissions)
+
+    public async ValueTask GrantPermissions(DiscordRole role, IEnumerable<String> permissions)
     {
-        throw new NotImplementedException();
+        RolePermissions perm = await this.GetRolePermissions(role);
+
+        IEnumerable<String> resolvedPermissions = permissions
+            .SelectMany(this.resolveWildcards)
+            .Distinct();
+
+        foreach(String s in resolvedPermissions)
+        {
+            perm.Permissions[s] = PermissionValue.Allowed;
+        }
+
+        await this.SetRolePermissions(perm);
     }
 
     public ValueTask RevokePermission(DiscordUser user, String permission)
