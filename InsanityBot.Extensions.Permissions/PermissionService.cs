@@ -366,35 +366,77 @@ public class PermissionService : IPermissionService
         await this.SetRolePermissions(perm);
     }
 
-    public ValueTask RevokePermission(DiscordUser user, String permission)
+    public async ValueTask RevokePermission(DiscordUser user, String permission)
     {
-        throw new NotImplementedException();
+        UserPermissions permissions = await this.GetUserPermissions(user);
+
+        foreach(String s in this.resolveWildcards(permission))
+        {
+            permissions.Permissions[s] = PermissionValue.Denied;
+        }
+
+        await this.SetUserPermissions(permissions);
     }
-    public ValueTask RevokePermission(DiscordRole role, String permission)
+
+    public async ValueTask RevokePermission(DiscordRole role, String permission)
     {
-        throw new NotImplementedException();
+        RolePermissions permissions = await this.GetRolePermissions(role);
+
+        foreach(String s in this.resolveWildcards(permission))
+        {
+            permissions.Permissions[s] = PermissionValue.Denied;
+        }
+
+        await this.SetRolePermissions(permissions);
     }
-    public ValueTask RevokePermissions(DiscordUser user, IEnumerable<String> permissions)
+
+    public async ValueTask RevokePermissions(DiscordUser user, IEnumerable<String> permissions)
     {
-        throw new NotImplementedException();
+        UserPermissions perm = await this.GetUserPermissions(user);
+
+        IEnumerable<String> resolvedPermissions = permissions
+            .SelectMany(this.resolveWildcards)
+            .Distinct();
+
+        foreach(String s in resolvedPermissions)
+        {
+            perm.Permissions[s] = PermissionValue.Denied;
+        }
+
+        await this.SetUserPermissions(perm);
     }
-    public ValueTask RevokePermissions(DiscordRole user, IEnumerable<String> permissions)
+
+    public async ValueTask RevokePermissions(DiscordRole role, IEnumerable<String> permissions)
     {
-        throw new NotImplementedException();
+        RolePermissions perm = await this.GetRolePermissions(role);
+
+        IEnumerable<String> resolvedPermissions = permissions
+            .SelectMany(this.resolveWildcards)
+            .Distinct();
+
+        foreach(String s in resolvedPermissions)
+        {
+            perm.Permissions[s] = PermissionValue.Denied;
+        }
+
+        await this.SetRolePermissions(perm);
     }
 
     public ValueTask UseFallback(DiscordUser user, String permission)
     {
         throw new NotImplementedException();
     }
+
     public ValueTask UseFallback(DiscordRole role, String permission)
     {
         throw new NotImplementedException();
     }
+
     public ValueTask UseFallbacks(DiscordUser user, IEnumerable<String> permissions)
     {
         throw new NotImplementedException();
     }
+
     public ValueTask UseFallbacks(DiscordRole user, IEnumerable<String> permissions)
     {
         throw new NotImplementedException();
