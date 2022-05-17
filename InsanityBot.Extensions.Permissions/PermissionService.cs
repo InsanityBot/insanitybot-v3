@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using InsanityBot.Extensions.Permissions.Objects;
@@ -723,22 +724,10 @@ public class PermissionService : IPermissionService
             return new String[] { source };
         }
 
-        List<String> resolved = new(this.__permissions);
-        String[] parts = source.Split('.');
+        Regex wildcardMatch = new(source, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.NonBacktracking);
 
-        for(Int32 i = 0; i < parts.Length; i++)
-        {
-            if(parts[i] == "*")
-            {
-                continue;
-            }
-
-            resolved = resolved
-                .Where(xm => xm.StartsWith(String.Concat(parts[0..i])))
-                .ToList();
-        }
-
-        return resolved;
+        return this.__permissions
+            .Where(xm => wildcardMatch.IsMatch(xm));
     }
     #endregion
 
