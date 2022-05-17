@@ -5,20 +5,20 @@
             "default": {
                 "always_preload_default": true,
                 "always_keep_default_loaded": false,
-                "cache_default": true,
                 "cache_expiration": "00:01:00"
             },
             "roles": {
                 "always_preload_all_roles": false,
                 "preload_roles": [],
                 "always_keep_roles_loaded": false,
-                "cache_roles": true,
                 "cache_expiration": "00:01:00"
             },
             "users": {
                 "always_keep_users_loaded": false,
-                "cache_users": true,
                 "cache_expiration": "00:01:00"
+            },
+            "unsafe": {
+                "allow_variant_engine_modes": false
             }
         }
     }

@@ -17,6 +17,7 @@
     "configuration": {
         "insanitybot": {
             "permissions": {
+                "use_fast_unsafe_engine": false,
                 "roles": {
                     "preload_roles_parallelized": true
                 }
