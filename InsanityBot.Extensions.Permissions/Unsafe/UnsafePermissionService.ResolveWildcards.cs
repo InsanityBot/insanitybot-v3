@@ -29,6 +29,7 @@ namespace InsanityBot.Extensions.Permissions.Unsafe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 public partial class UnsafePermissionService
 {
@@ -38,6 +39,7 @@ public partial class UnsafePermissionService
     private readonly Memory<Char> __wildcards;
     private readonly Memory<Char> __tolerate_anything_pattern;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private IEnumerable<String> resolveWildcards(String input)
     {
         ReadOnlySpan<Char> expression = input.AsSpan();
@@ -60,6 +62,7 @@ public partial class UnsafePermissionService
             .Where(xm => this.matchWildcards(input.AsSpan()[firstWildcardIndex..], xm.AsSpan()[firstWildcardIndex..]));
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private Boolean matchWildcards(ReadOnlySpan<Char> expression, ReadOnlySpan<Char> permission)
     {
         // if nothing is specified, return true.
