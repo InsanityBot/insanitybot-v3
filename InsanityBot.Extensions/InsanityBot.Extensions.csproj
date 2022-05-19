@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="JsonPath.Net" Version="0.2.1" />
         <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0-preview.4.22229.4" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0-preview.4.22229.4" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-preview.4.22229.4" />
@@ -35,10 +36,10 @@
         <PackageReference Include="Serilog.Sinks.SpectreConsole" Version="0.1.1" />
         <PackageReference Include="SerilogMetrics" Version="2.1.0" />
 
-        <PackageReference Include="Spectre.Console" Version="0.44.1-preview.0.16" />
+        <PackageReference Include="Spectre.Console" Version="0.44.1-preview.0.17" />
         <PackageReference Include="Spectre.Console.Extensions.Progress" Version="1.0.0" />
         
-        <PackageReference Include="Starnight" Version="0.1.0-dev.151" />
+        <PackageReference Include="Starnight" Version="0.1.0-dev.164" />
     </ItemGroup>
 
     <ItemGroup>

@@ -4,6 +4,8 @@
 // The original code has been deemed unsuitable for InsanityBot's use, and therefore
 // adapted here.
 //
+// The MIT License
+//
 // Copyright (c) 2018 - present, .NET Foundation
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy

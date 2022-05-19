@@ -27,7 +27,7 @@ public class PermissionService : IPermissionService
     private readonly ILogger<IPermissionService> __logger;
     private readonly IMemoryCache __cache;
 
-    private readonly DiscordGuildsRestResource __guild_resource;
+    private readonly DiscordGuildRestResource __guild_resource;
     private readonly HttpClient __http_client;
 
     private readonly DefaultPermissionService __default_permission_service;
@@ -42,7 +42,7 @@ public class PermissionService : IPermissionService
     (
         ILogger<IPermissionService> logger,
         IMemoryCache cache,
-        DiscordGuildsRestResource guildResource,
+        DiscordGuildRestResource guildResource,
         HttpClient httpClient,
         DefaultPermissionService defaultService,
         RolePermissionService roleService,

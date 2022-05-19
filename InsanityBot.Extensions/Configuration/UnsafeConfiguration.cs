@@ -4,6 +4,8 @@ using System;
 using System.IO;
 using System.Text.Json;
 
+using Json.Path;
+
 using Microsoft.Extensions.Logging;
 
 public class UnsafeConfiguration : IConfiguration
@@ -25,8 +27,11 @@ public class UnsafeConfiguration : IConfiguration
         // TODO: backup config handling
         // TODO: Datafixer calls
 
-        this.Configuration = fullFile.SelectElement("configuration") ?? new();
-        this.DataVersion = fullFile.SelectElement("data_version")?.ToString() ?? String.Empty;
+        this.Configuration = fullFile.RootElement;
+
+        JsonPath versionPath = JsonPath.Parse("$.data_version");
+
+        this.DataVersion = versionPath.Evaluate(this.Configuration).Matches![0].Value.Deserialize<String>()!;
 
         logger.LogDebug(LoggerEventIds.UnsafeConfigurationSuccess, "Successfully loaded unsafe configuration");
     }
