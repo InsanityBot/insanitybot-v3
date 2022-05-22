@@ -156,7 +156,7 @@ public class PermissionService : IPermissionService
                 {
                     foreach(DiscordPermissions discordPermission in this.__mapping.ComplexMapping![permission])
                     {
-                        if((role.Permissions & discordPermission) != 0)
+                        if((role.Permissions & discordPermission) == discordPermission)
                         {
                             permissions.Permissions[permission] = PermissionValue.Allowed;
                         }
