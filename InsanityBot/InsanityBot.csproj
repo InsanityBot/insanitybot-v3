@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <Import Project="../BundleConfigs.targets" />
-    <Import Project="../BundlePermissions.targets"/>
+    <Import Project="../BundlePermissions.targets" />
     <Import Project="../BundleGitInfo.targets" />
     <Import Project="../InsanityBot.targets" />
 
@@ -18,6 +18,15 @@
         <None Include="../config/permissions/*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Serilog" Version="2.11.1-dev-01397" />
+        <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.1-dev-00787" />
+        <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.1-dev-10301" />
+        <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947" />
+        <PackageReference Include="Serilog.Sinks.Map" Version="1.0.2" />
+        <PackageReference Include="Serilog.Sinks.SpectreConsole" Version="0.1.1" />
     </ItemGroup>
 
     <ItemGroup>
