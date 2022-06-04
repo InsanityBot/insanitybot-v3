@@ -806,7 +806,7 @@ public class PermissionService : IPermissionService
         {
             RolePermissions role = this.__role_permission_service.GetRolePermissions(roles[i])!;
 
-            if(role == null)
+            if(role is null)
             {
                 continue;
             }

@@ -1,6 +1,7 @@
 namespace InsanityBot.Extensions.Permissions.Unsafe;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,6 +21,7 @@ public partial class UnsafePermissionService : IPermissionService
 
     private readonly DefaultPermissionService __default_service;
     private readonly RolePermissionService __role_service;
+    private readonly UserPermissionService __user_service;
 
     private readonly DiscordGuildRestResource __guild_resource;
 
@@ -29,6 +31,8 @@ public partial class UnsafePermissionService : IPermissionService
 
     private readonly Dictionary<String, PermissionValue> __permissions_all_passthrough;
 
+    private readonly ConcurrentDictionary<Int64, IEnumerable<Int64>> __role_trees;
+
     private Guid __current_update_guid;
 
     public UnsafePermissionService
@@ -37,6 +41,7 @@ public partial class UnsafePermissionService : IPermissionService
         IMemoryCache cache,
         DefaultPermissionService defaultService,
         RolePermissionService roleService,
+        UserPermissionService userService,
         DiscordGuildRestResource guildResource
     )
     {
@@ -44,6 +49,7 @@ public partial class UnsafePermissionService : IPermissionService
         this.__cache = cache;
         this.__default_service = defaultService;
         this.__role_service = roleService;
+        this.__user_service = userService;
         this.__guild_resource = guildResource;
 
         this.__logger.LogInformation(LoggerEventIds.PermissionsInitializing, "Initializing permission subsystem...");
@@ -85,6 +91,8 @@ public partial class UnsafePermissionService : IPermissionService
                 permissionEnumerator.MoveNext();
                 return permissionEnumerator.Current;
             });
+
+        this.__role_trees = new();
 
         this.__logger.LogInformation(LoggerEventIds.PermissionsInitialized, "The permission subsystem was successfully initialized.");
     }
