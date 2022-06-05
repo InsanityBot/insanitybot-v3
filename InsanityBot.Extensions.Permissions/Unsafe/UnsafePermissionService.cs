@@ -35,6 +35,14 @@ public partial class UnsafePermissionService : IPermissionService
 
     private Guid __current_update_guid;
 
+    // belonging to UnsafePermissionService.ResolveWildcards.cs
+    // 
+    // one thing to note about the use of Memory<Char> and .Span calls here: these are purely on the stack.
+    // there are no heap allocations incurred there: in fact matchWildcards is allocation-free, and resolveWildcards
+    // only allocates once for its final result.
+    private readonly Memory<Char> __wildcards;
+    private readonly Memory<Char> __tolerate_anything_pattern;
+
     public UnsafePermissionService
     (
         ILogger<IPermissionService> logger,

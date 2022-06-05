@@ -35,12 +35,6 @@ using System.Runtime.CompilerServices;
 
 public partial class UnsafePermissionService
 {
-    // one thing to note about the use of Memory<Char> and .Span calls here: these are purely on the stack.
-    // there are no heap allocations incurred there: in fact matchWildcards is allocation-free, and resolveWildcards
-    // only allocates once for its final result.
-    private readonly Memory<Char> __wildcards;
-    private readonly Memory<Char> __tolerate_anything_pattern;
-
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private IEnumerable<String> resolveWildcards(String input)
     {
