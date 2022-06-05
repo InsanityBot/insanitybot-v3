@@ -12,53 +12,79 @@ public partial class UnsafePermissionService
 {
     public ValueTask<DefaultPermissions> GetDefaultPermissions()
     {
-        throw new NotImplementedException();
+        return ValueTask.FromResult(
+            this.__default_service.GetDefaultPermissions()
+            ?? this.__default_service.CreateDefaultPermissions(this.__manifest));
     }
 
     public ValueTask<RolePermissions> GetRolePermissions(DiscordRole role)
     {
-        throw new NotImplementedException();
+        return ValueTask.FromResult(
+            this.__role_service.GetRolePermissions(role.Id)
+            ?? this.__role_service.CreateRolePermissions(role.Id));
     }
 
     public ValueTask<UserPermissions> GetUserPermissions(DiscordUser user)
     {
-        throw new NotImplementedException();
+        return ValueTask.FromResult(
+            this.__user_service.GetUserPermissions(user.Id)
+            ?? this.__user_service.CreateUserPermissions(user.Id));
     }
 
 
     public ValueTask SetDefaultPermissions(DefaultPermissions defaultPermissions)
     {
-        throw new NotImplementedException();
+        this.__current_update_guid = Guid.NewGuid();
+
+        this.__default_service.WriteDefaultPermissions(defaultPermissions with { UpdateGuid = this.__current_update_guid});
+
+        return ValueTask.CompletedTask;
     }
 
     public ValueTask SetRolePermissions(RolePermissions rolePermissions)
     {
-        throw new NotImplementedException();
+        this.__role_service.WriteRolePermissions(rolePermissions);
+
+        return ValueTask.CompletedTask;
     }
 
     public ValueTask SetUserPermissions(UserPermissions userPermissions)
     {
-        throw new NotImplementedException();
+        this.__user_service.WriteUserPermissions(userPermissions);
+
+        return ValueTask.CompletedTask;
     }
 
 
     public ValueTask CreateRolePermissions(DiscordRole role)
     {
-        throw new NotImplementedException();
+        RolePermissions permissions = this.__role_service.CreateRolePermissions(role.Id);
+
+        this.__role_service.WriteRolePermissions(permissions);
+
+        return ValueTask.CompletedTask;
     }
 
     public ValueTask CreateRolePermissions(RolePermissions permissions)
     {
-        throw new NotImplementedException();
+        this.__role_service.WriteRolePermissions(permissions);
+
+        return ValueTask.CompletedTask;
     }
 
     public ValueTask CreateUserPermissions(DiscordUser user)
     {
-        throw new NotImplementedException();
+        UserPermissions permissions = this.__user_service.CreateUserPermissions(user.Id);
+
+        this.__user_service.WriteUserPermissions(permissions);
+
+        return ValueTask.CompletedTask;
     }
 
     public ValueTask CreateUserPermissions(UserPermissions permissions)
     {
-        throw new NotImplementedException();
+        this.__user_service.WriteUserPermissions(permissions);
+
+        return ValueTask.CompletedTask;
     }
 }
