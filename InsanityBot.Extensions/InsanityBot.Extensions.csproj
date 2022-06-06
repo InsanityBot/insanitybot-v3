@@ -23,11 +23,8 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0-preview.4.22229.4" />
         <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0-preview.4.22229.4" />
         <PackageReference Include="Microsoft.Extensions.Primitives" Version="7.0.0-preview.4.22229.4" />
-
-        <PackageReference Include="Spectre.Console" Version="0.44.1-preview.0.17" />
-        <PackageReference Include="Spectre.Console.Extensions.Progress" Version="1.0.0" />
         
-        <PackageReference Include="Starnight" Version="0.1.0-dev.173" />
+        <PackageReference Include="Starnight" Version="0.1.0-dev.198" />
     </ItemGroup>
 
     <ItemGroup>
