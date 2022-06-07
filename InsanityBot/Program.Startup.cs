@@ -1,7 +1,10 @@
 namespace InsanityBot;
 
 using System;
+using System.Reflection;
+using System.Threading.Tasks;
 
+using InsanityBot.Extensions.Datafixers;
 using InsanityBot.Extensions.Permissions;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +14,7 @@ using Starnight.Internal.Rest;
 
 public static partial class Program
 {
-    public static Int32 Main(String[] argv)
+    public static async Task Main(String[] argv)
     {
         IHostBuilder hostBuilder = Host
             .CreateDefaultBuilder(argv)
@@ -22,7 +25,14 @@ public static partial class Program
         String token = "";
         PermissionServiceType selectedPermissionService = PermissionServiceType.Default;
 
-        // todo: register datafixers
+        hostBuilder.ConfigureServices(async services =>
+        {
+            DataFixerUpper dataFixerUpper = new();
+            await dataFixerUpper.DiscoverDatafixers(services.BuildServiceProvider(), Assembly.GetExecutingAssembly());
+
+            services.AddSingleton<IDatafixerService>(dataFixerUpper);
+        });
+
         // todo: load and register configs
 
         // register starnight
@@ -44,6 +54,6 @@ public static partial class Program
             services.AddPermissionServices(selectedPermissionService);
         });
 
-        return 0;
+        await hostBuilder.Build().StartAsync();
     }
 }

@@ -45,7 +45,7 @@ public static partial class Program
 #if DEBUG
                     LogEventLevel.Debug,
 #else
-                    LogEvenLevel.Information,
+                    LogEventLevel.Information,
 #endif
                     outputTemplate: FileLogFormat,
                     // 32 megabytes
