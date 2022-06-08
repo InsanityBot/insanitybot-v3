@@ -18,7 +18,7 @@ using Spectre.Console;
 
 public class DataFixerUpper : IDatafixerService
 {
-    private readonly ConcurrentDictionary<Type, ConcurrentBag<ITypelessDatafixer>> __sorted_datafixers;
+    private readonly ConcurrentDictionary<Type, ConcurrentBag<IDatafixer>> __sorted_datafixers;
 
     public DataFixerUpper()
     {
@@ -129,7 +129,7 @@ public class DataFixerUpper : IDatafixerService
 
         complexInit = types.Except(simpleInit).ToList();
 
-        List<ITypelessDatafixer> datafixers = new();
+        List<IDatafixer> datafixers = new();
 
         AnsiConsole.Progress()
             .AutoClear(false)
@@ -143,7 +143,7 @@ public class DataFixerUpper : IDatafixerService
 
                 foreach(Type t in simpleInit)
                 {
-                    datafixers.Add((ITypelessDatafixer)createInstance(t));
+                    datafixers.Add((IDatafixer)createInstance(t));
 
                     simpleInitTask.Increment(1);
                 }
@@ -163,7 +163,7 @@ public class DataFixerUpper : IDatafixerService
 
                 foreach(Type t in complexInit)
                 {
-                    datafixers.Add((ITypelessDatafixer)createComplexInstance(t, services));
+                    datafixers.Add((IDatafixer)createComplexInstance(t, services));
 
                     complexInitTask.Increment(1);
                 }
@@ -176,7 +176,7 @@ public class DataFixerUpper : IDatafixerService
             if(!this.__sorted_datafixers.ContainsKey(datafixer.Datafixable))
             {
                 this.__sorted_datafixers.AddOrUpdate(key: datafixer.Datafixable,
-                    addValue: new ConcurrentBag<ITypelessDatafixer>() { datafixer },
+                    addValue: new ConcurrentBag<IDatafixer>() { datafixer },
                     updateValueFactory: (key, old) =>
                     {
                         old.Add(datafixer);
