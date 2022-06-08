@@ -1,6 +1,7 @@
 namespace InsanityBot.Extensions.Datafixers;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -17,7 +18,7 @@ using Spectre.Console;
 
 public class DataFixerUpper : IDatafixerService
 {
-    private readonly Dictionary<Type, IEnumerable<ITypelessDatafixer>> __sorted_datafixers;
+    private readonly ConcurrentDictionary<Type, ConcurrentBag<ITypelessDatafixer>> __sorted_datafixers;
 
     public DataFixerUpper()
     {
@@ -169,6 +170,26 @@ public class DataFixerUpper : IDatafixerService
 
                 complexInitTask.Value = maxValue;
             });
+
+        _ = Parallel.ForEachAsync(datafixers, (datafixer, cancellationToken) =>
+        {
+            if(!this.__sorted_datafixers.ContainsKey(datafixer.Datafixable))
+            {
+                this.__sorted_datafixers.AddOrUpdate(key: datafixer.Datafixable,
+                    addValue: new ConcurrentBag<ITypelessDatafixer>() { datafixer },
+                    updateValueFactory: (key, old) =>
+                    {
+                        old.Add(datafixer);
+                        return old;
+                    });
+            }
+            else
+            {
+                this.__sorted_datafixers[datafixer.Datafixable].Add(datafixer);
+            }
+
+            return ValueTask.CompletedTask;
+        });
 
         return ValueTask.CompletedTask;
     }
