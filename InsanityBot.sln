@@ -43,6 +43,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InsanityBot", "InsanityBot\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InsanityBot.Core", "InsanityBot.Core\InsanityBot.Core.csproj", "{E9314834-8489-4A20-99EE-5EF2D4600A70}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Permissions", "Permissions", "{797C38DC-D021-4F38-A092-7D60D593A92E}"
+	ProjectSection(SolutionItems) = preProject
+		config\permissions\dummy.json = config\permissions\dummy.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +85,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{703AD795-B612-430A-963E-D67F63B3E4EC} = {4E6E783C-8387-49D5-9825-BEFFD5736C55}
 		{7BCD5576-2E67-42F6-A5DA-AF84DAE1AC79} = {4E6E783C-8387-49D5-9825-BEFFD5736C55}
+		{797C38DC-D021-4F38-A092-7D60D593A92E} = {4E6E783C-8387-49D5-9825-BEFFD5736C55}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {97EAD6C8-7409-4FB5-8DBB-98A084256D5C}

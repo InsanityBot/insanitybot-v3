@@ -3,6 +3,12 @@
     "token": " ",
     "home_guild_id": 0,
     "configuration": {
-        
+        "insanitybot": {
+            "extensions": {
+                "permissions": {
+                    "permission_service": "default"
+                }
+            }
+        }
     }
 }

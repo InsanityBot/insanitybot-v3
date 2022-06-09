@@ -21,6 +21,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Remove="..\config\permissions\dummy.json" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Serilog" Version="2.11.1-dev-01397" />
         <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.1-dev-00787" />
         <PackageReference Include="Serilog.Expressions" Version="3.4.0" />

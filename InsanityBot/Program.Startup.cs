@@ -47,7 +47,18 @@ public static partial class Program
                 .AddSingleton<PermissionConfiguration>()
                 .AddSingleton<UnsafeConfiguration>();
 
-            token = services.BuildServiceProvider().GetRequiredService<MainConfiguration>().Token;
+            IServiceProvider provider = services.BuildServiceProvider();
+
+            token = provider.GetRequiredService<MainConfiguration>().Token;
+
+            // retrieve permission service type
+            selectedPermissionService = (provider.GetRequiredService<MainConfiguration>() as IConfiguration)
+                .Value<String>("insanitybot.extensions.permissions.permission_service") switch
+            {
+                "default" or "standard" => PermissionServiceType.Default,
+                "fast" or "fast_unsafe" or "unsafe" => PermissionServiceType.FastUnsafe,
+                _ => PermissionServiceType.Default
+            };
         });
 
         // register starnight
