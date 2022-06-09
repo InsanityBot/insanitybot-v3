@@ -8,4 +8,6 @@ public interface IDatafixer
     public String NewVersion { get; }
 
     public Type Datafixable { get; }
+
+    public Object UpdateData(Object old);
 }

@@ -30,14 +30,47 @@ public class DataFixerUpper : IDatafixerService
         Log.Logger.Information("Initializing DataFixerUpper");
 
         List<Type> types = new();
+        List<Type> simpleInit = new();
+        List<Type> complexInit = new();
+        Type datafixerType = typeof(IDatafixable);
+        List<IDatafixer> datafixers = new();
 
         AnsiConsole.Progress()
             .AutoClear(false)
             .HideCompleted(false)
+            .Columns(
+                new TaskDescriptionColumn()
+                {
+                    Alignment = Justify.Right
+                },
+                new ProgressBarColumn()
+                {
+                    Width = 50,
+                    CompletedStyle = new Style(Color.Purple3),
+                    FinishedStyle = new Style(Color.MediumSpringGreen)
+                },
+                new PercentageColumn()
+                {
+                    Style = new Style(Color.Purple3),
+                    CompletedStyle = new Style(Color.MediumSpringGreen)
+                },
+                new ElapsedTimeColumn(),
+                new SpinnerColumn(Spinner.Known.Dots2)
+            )
             .Start(context =>
             {
                 ProgressTask assemblyTypeLoading =
-                    context.AddTask("Loading types from assemblies...", maxValue: assemblies.Length);
+                    context.AddTask("Loading types from assemblies", maxValue: assemblies.Length);
+                ProgressTask typePreprocessing =
+                    context.AddTask("Preprocessing types");
+                ProgressTask typeFiltering =
+                    context.AddTask("Filtering ignored datafixer types");
+                ProgressTask findSimpleInit =
+                    context.AddTask("Finding simple-initialization datafixers");
+                ProgressTask simpleInitTask =
+                    context.AddTask("Creating simple-initialization datafixers");
+                ProgressTask complexInitTask =
+                    context.AddTask("Creating complex-initialization datafixers");
 
                 foreach(Assembly assembly in assemblies)
                 {
@@ -48,24 +81,14 @@ public class DataFixerUpper : IDatafixerService
 
                 // ensure we don't deadlock
                 assemblyTypeLoading.Value = assemblies.Length;
-            });
 
-        Type datafixerType = typeof(IDatafixable);
-
-        AnsiConsole.Progress()
-            .AutoClear(false)
-            .HideCompleted(false)
-            .Start(context =>
-            {
                 Double maxValue = types.Count;
-
-                ProgressTask typePreprocessing =
-                    context.AddTask("Preprocessing types...", maxValue: maxValue);
+                Double increment = 100.0 / maxValue;
 
                 types = types
                     .Where(xm =>
                     {
-                        typePreprocessing.Increment(1);
+                        typePreprocessing.Increment(increment);
 
                         if(xm.GetInterfaces().Contains(datafixerType))
                         {
@@ -75,100 +98,64 @@ public class DataFixerUpper : IDatafixerService
                     })
                     .ToList();
 
-                typePreprocessing.Value = maxValue;
-            });
+                typePreprocessing.Value = 100.0;
 
-        Log.Logger.Information("Datafixer types discovered, filtering and processing datafixers.");
+                maxValue = types.Count;
+                increment = 100.0 / maxValue;
 
-        AnsiConsole.Progress()
-            .AutoClear(false)
-            .HideCompleted(false)
-            .Start(context =>
-            {
-                Double maxValue = types.Count;
-
-                ProgressTask typeFiltering =
-                    context.AddTask("Filtering ignored datafixer types...", maxValue: maxValue);
 
                 types = types
                     .Where(xm =>
                     {
-                        typeFiltering.Increment(1);
+                        typeFiltering.Increment(increment);
 
                         return xm.GetCustomAttribute<IgnoreDatafixerAttribute>() is not null;
                     })
                     .ToList();
 
-                typeFiltering.Value = maxValue;
-            });
+                typeFiltering.Value = 100.0;
 
-        List<Type> simpleInit = new();
-        List<Type> complexInit = new();
-
-        AnsiConsole.Progress()
-            .AutoClear(false)
-            .HideCompleted(false)
-            .Start(context =>
-            {
-                Double maxValue = types.Count;
-
-                ProgressTask findSimpleInit =
-                    context.AddTask("Finding simple-initialization datafixers...", maxValue: maxValue);
+                maxValue = types.Count;
+                increment = 100.0 / maxValue;
 
                 simpleInit = types
                     .Where(xm =>
                     {
-                        findSimpleInit.Increment(1);
+                        findSimpleInit.Increment(increment);
 
                         return xm.GetCustomAttribute<RequiresDependencyInjectionAttribute>() is null;
                     })
                     .ToList();
 
-                findSimpleInit.Value = maxValue;
-            });
+                findSimpleInit.Value = 100.0;
 
-        complexInit = types.Except(simpleInit).ToList();
+                complexInit = types.Except(simpleInit).ToList();
 
-        List<IDatafixer> datafixers = new();
+                maxValue = simpleInit.Count;
+                increment = 100.0 / maxValue;
 
-        AnsiConsole.Progress()
-            .AutoClear(false)
-            .HideCompleted(false)
-            .Start(context =>
-            {
-                Double maxValue = simpleInit.Count;
-
-                ProgressTask simpleInitTask =
-                    context.AddTask("Creating simple-initialization datafixers...", maxValue: maxValue);
 
                 foreach(Type t in simpleInit)
                 {
                     datafixers.Add((IDatafixer)createInstance(t));
 
-                    simpleInitTask.Increment(1);
+                    simpleInitTask.Increment(increment);
                 }
 
-                simpleInitTask.Value = maxValue;
-            });
+                simpleInitTask.Value = 100.0;
 
-        AnsiConsole.Progress()
-            .AutoClear(false)
-            .HideCompleted(false)
-            .Start(context =>
-            {
-                Double maxValue = complexInit.Count;
+                maxValue = complexInit.Count;
+                increment = 100.0 / maxValue;
 
-                ProgressTask complexInitTask =
-                    context.AddTask("Creating complex-initialization datafixers...", maxValue: maxValue);
 
                 foreach(Type t in complexInit)
                 {
                     datafixers.Add((IDatafixer)createComplexInstance(t, services));
 
-                    complexInitTask.Increment(1);
+                    complexInitTask.Increment(increment);
                 }
 
-                complexInitTask.Value = maxValue;
+                complexInitTask.Value = 100.0;
             });
 
         _ = Parallel.ForEachAsync(datafixers, (datafixer, cancellationToken) =>
@@ -211,12 +198,32 @@ public class DataFixerUpper : IDatafixerService
     public ValueTask<Boolean> ApplyDatafixers<Datafixable>(ref Datafixable datafixable)
         where Datafixable : IDatafixable
     {
-        throw new NotImplementedException();
-    }
+        Log.Logger.Information($"Starting datafixer operation for {typeof(Datafixable)}");
 
-    public ValueTask<Boolean> RevertDatafixers<Datafixable>(ref Datafixable datafixable)
-        where Datafixable : IDatafixable
-    {
-        throw new NotImplementedException();
+        if(!this.__sorted_datafixers.ContainsKey(typeof(Datafixable)))
+        {
+            Log.Logger.Information("No applicable datafixers were found, returning");
+            return ValueTask.FromResult(true);
+        }
+
+        String currentVersion = datafixable.DataVersion;
+
+        do
+        {
+            IEnumerable<IDatafixer> candidates = this.__sorted_datafixers[typeof(Datafixable)]
+                .Where(xm => xm.OldVersion == currentVersion);
+
+            IDatafixer datafixer = candidates.FirstOrDefault()!;
+
+            if(datafixer == default)
+            {
+                break;
+            }
+
+            datafixable = (Datafixable)datafixer.UpdateData(datafixable);
+
+        } while(true);
+
+        return ValueTask.FromResult(true);
     }
 }

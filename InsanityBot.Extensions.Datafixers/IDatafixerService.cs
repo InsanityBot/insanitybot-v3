@@ -12,7 +12,4 @@ public interface IDatafixerService
 
     public ValueTask<Boolean> ApplyDatafixers<Datafixable>(ref Datafixable datafixable)
         where Datafixable : IDatafixable;
-
-    public ValueTask<Boolean> RevertDatafixers<Datafixable>(ref Datafixable datafixable)
-        where Datafixable : IDatafixable;
 }
