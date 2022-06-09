@@ -4,11 +4,14 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 
+using InsanityBot.Extensions.Configuration;
 using InsanityBot.Extensions.Datafixers;
 using InsanityBot.Extensions.Permissions;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using Serilog;
 
 using Starnight.Internal.Rest;
 
@@ -22,7 +25,6 @@ public static partial class Program
 
         hostBuilder.addInsanityBotLogging();
 
-        String token = "";
         PermissionServiceType selectedPermissionService = PermissionServiceType.Default;
 
         hostBuilder.ConfigureServices(async services =>
@@ -37,19 +39,36 @@ public static partial class Program
             await dataFixerUpper.DiscoverDatafixers(services.BuildServiceProvider(), Assembly.GetExecutingAssembly());
         });
 
-        // todo: load and register configs
+        String token = "";
+
+        hostBuilder.ConfigureServices(services =>
+        {
+            services.AddSingleton<MainConfiguration>()
+                .AddSingleton<PermissionConfiguration>()
+                .AddSingleton<UnsafeConfiguration>();
+
+            token = services.BuildServiceProvider().GetRequiredService<MainConfiguration>().Token;
+        });
 
         // register starnight
-        /* hostBuilder.ConfigureServices(services =>
+        hostBuilder.ConfigureServices(services =>
         {
-            services.AddStarnightRestClient(new RestClientOptions()
+            try
             {
-                MedianFirstRequestRetryDelay = TimeSpan.FromSeconds(0.25),
-                RatelimitedRetryCount = 25,
-                RetryCount = 25,
-                Token = token
-            });
-        }); */
+                services.AddStarnightRestClient(new RestClientOptions()
+                {
+                    MedianFirstRequestRetryDelay = TimeSpan.FromSeconds(0.25),
+                    RatelimitedRetryCount = 25,
+                    RetryCount = 25,
+                    Token = token
+                });
+            }
+            catch(Exception e)
+            {
+                Log.Logger.Error(e, "Failed to register Starnight rest client.");
+                return;
+            }
+        }); 
 
         // register further InsanityBot extensions
         hostBuilder.ConfigureServices(services =>

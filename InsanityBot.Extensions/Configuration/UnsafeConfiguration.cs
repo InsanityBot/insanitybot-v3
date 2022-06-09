@@ -21,7 +21,7 @@ public class UnsafeConfiguration : IConfiguration
 
         JsonDocument fullFile = JsonDocument.Parse(reader.ReadToEnd(), new JsonDocumentOptions()
         {
-            CommentHandling = JsonCommentHandling.Allow
+            CommentHandling = JsonCommentHandling.Skip
         });
 
         reader.Close();
