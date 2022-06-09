@@ -7,8 +7,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 
 using Serilog;
+using Serilog.Events;
 using Serilog.Templates;
-using Serilog.Templates.Themes;
 
 public static partial class Program
 {
@@ -31,6 +31,7 @@ public static partial class Program
                 .Enrich.FromLogContext()
 #if DEBUG
                 .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft.Extensions.Hosting", LogEventLevel.Information)
 #else
                 .MinimumLevel.Information()
 #endif

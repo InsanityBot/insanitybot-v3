@@ -24,7 +24,7 @@
         <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0-preview.4.22229.4" />
         <PackageReference Include="Microsoft.Extensions.Primitives" Version="7.0.0-preview.4.22229.4" />
         
-        <PackageReference Include="Starnight" Version="0.1.0-dev.199" />
+        <PackageReference Include="Starnight" Version="0.1.0-dev.201" />
     </ItemGroup>
 
     <ItemGroup>
