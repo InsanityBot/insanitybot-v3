@@ -13,7 +13,7 @@ public class UnsafeConfiguration : IConfiguration
     public JsonElement Configuration { get; set; }
     public String DataVersion { get; set; }
 
-    public UnsafeConfiguration(ILogger<IConfiguration> logger)
+    public UnsafeConfiguration(ILogger<UnsafeConfiguration> logger)
     {
         logger.LogDebug(LoggerEventIds.UnsafeConfigurationLoading, "Loading unsafe configuration from disk...");
 

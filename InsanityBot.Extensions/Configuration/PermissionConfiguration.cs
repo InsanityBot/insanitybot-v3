@@ -13,7 +13,7 @@ public class PermissionConfiguration : IConfiguration
     public JsonElement Configuration { get; set; }
     public String DataVersion { get; set; }
 
-    public PermissionConfiguration(ILogger<IConfiguration> logger)
+    public PermissionConfiguration(ILogger<PermissionConfiguration> logger)
     {
         logger.LogDebug(LoggerEventIds.PermissionConfigurationLoading, "Loading permission configuration from disk...");
 

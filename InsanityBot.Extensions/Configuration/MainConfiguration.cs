@@ -18,7 +18,7 @@ public class MainConfiguration : IConfiguration
 
     public Int64 HomeGuildId { get; set; }
 
-    public MainConfiguration(ILogger<IConfiguration> logger)
+    public MainConfiguration(ILogger<MainConfiguration> logger)
     {
         logger.LogDebug(LoggerEventIds.PermissionConfigurationLoading, "Loading permission configuration from disk...");
 
@@ -46,7 +46,7 @@ public class MainConfiguration : IConfiguration
 
         JsonPath idPath = JsonPath.Parse("$.home_guild_id");
 
-        this.HomeGuildId = tokenPath.Evaluate(this.Configuration).Matches![0].Value.Deserialize<Int64>()!;
+        this.HomeGuildId = idPath.Evaluate(this.Configuration).Matches![0].Value.Deserialize<Int64>()!;
 
         logger.LogDebug(LoggerEventIds.PermissionConfigurationSuccess, "Successfully loaded permission configuration");
     }
