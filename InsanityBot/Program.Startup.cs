@@ -10,6 +10,8 @@ using InsanityBot.Extensions.Permissions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using Serilog;
+
 using Starnight.Internal.Rest;
 
 public static partial class Program
@@ -27,18 +29,21 @@ public static partial class Program
 
         hostBuilder.ConfigureServices(async services =>
         {
-            DataFixerUpper dataFixerUpper = new();
-            await dataFixerUpper.DiscoverDatafixers(services.BuildServiceProvider(), Assembly.GetExecutingAssembly());
+            services.AddMemoryCache();
+            services.AddSingleton<IDatafixerService, DataFixerUpper>();
 
-            services.AddSingleton<IDatafixerService>(dataFixerUpper);
+            IServiceProvider provider = services.BuildServiceProvider();
+
+            DataFixerUpper dataFixerUpper = (DataFixerUpper)provider.GetRequiredService<IDatafixerService>();
+
+            await dataFixerUpper.DiscoverDatafixers(services.BuildServiceProvider(), Assembly.GetExecutingAssembly());
         });
 
         // todo: load and register configs
 
         // register starnight
-        hostBuilder.ConfigureServices(services =>
+        /* hostBuilder.ConfigureServices(services =>
         {
-            services.AddMemoryCache();
             services.AddStarnightRestClient(new RestClientOptions()
             {
                 MedianFirstRequestRetryDelay = TimeSpan.FromSeconds(0.25),
@@ -46,7 +51,7 @@ public static partial class Program
                 RetryCount = 25,
                 Token = token
             });
-        });
+        }); */
 
         // register further InsanityBot extensions
         hostBuilder.ConfigureServices(services =>
@@ -54,6 +59,10 @@ public static partial class Program
             services.AddPermissionServices(selectedPermissionService);
         });
 
-        await hostBuilder.Build().StartAsync();
+        IHost host = hostBuilder.Build();
+
+        await host.StartAsync();
+
+        await host.WaitForShutdownAsync();
     }
 }

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using InsanityBot.Extensions.Datafixers.Attributes;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 using Serilog;
 
@@ -18,16 +19,18 @@ using Spectre.Console;
 
 public class DataFixerUpper : IDatafixerService
 {
+    private readonly Microsoft.Extensions.Logging.ILogger<IDatafixerService> __logger;
     private readonly ConcurrentDictionary<Type, ConcurrentBag<IDatafixer>> __sorted_datafixers;
 
-    public DataFixerUpper()
+    public DataFixerUpper(Microsoft.Extensions.Logging.ILogger<IDatafixerService> logger)
     {
+        this.__logger = logger;
         this.__sorted_datafixers = new();
     }
 
     public ValueTask DiscoverDatafixers(IServiceProvider services, params Assembly[] assemblies)
     {
-        Log.Logger.Information("Initializing DataFixerUpper");
+        this.__logger.LogInformation("Initializing DataFixerUpper");
 
         List<Type> types = new();
         List<Type> simpleInit = new();
@@ -157,6 +160,8 @@ public class DataFixerUpper : IDatafixerService
 
                 complexInitTask.Value = 100.0;
             });
+
+        this.__logger.LogInformation("Initialized datafixers, sorting datafixers...");
 
         _ = Parallel.ForEachAsync(datafixers, (datafixer, cancellationToken) =>
         {

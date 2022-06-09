@@ -8,20 +8,17 @@ using Microsoft.Extensions.Hosting;
 
 using Serilog;
 using Serilog.Events;
-using Serilog.Sinks.SpectreConsole;
 
 public static partial class Program
 {
     public const String ConsoleLogFormat =
-        "[[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}]] " +
-        "[[{Level}]]" +
-        "{#if EventId is not null} [#FDEFB2][[{EventId.Name}:{EventId.Id}]][/]{#end}" +
+        "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}] " +
+        "[{Level}] " +
         "[{SourceContext}]: {Message}{NewLine}{Exception}";
 
     public const String FileLogFormat =
-        "[[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}]] " +
-        "[[{Level}]]" +
-        "{#if EventId is not null} [[{EventId.Name}:{EventId.Id}]]{#end}" +
+        "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}] " +
+        "[{Level}] " +
         "[{SourceContext}]: {Message}{NewLine}{Exception}";
 
     private static IHostBuilder addInsanityBotLogging(this IHostBuilder host)
@@ -31,7 +28,7 @@ public static partial class Program
             LoggerConfiguration config = new LoggerConfiguration()
                 .Enrich.WithEnvironmentName()
                 .Enrich.FromLogContext()
-                .WriteTo.SpectreConsole(ConsoleLogFormat,
+                .WriteTo.Console(outputTemplate: ConsoleLogFormat, restrictedToMinimumLevel:
 #if DEBUG
                 LogEventLevel.Debug)
 #else
@@ -51,7 +48,6 @@ public static partial class Program
                     // 32 megabytes
                     fileSizeLimitBytes: 33_554_432,
                     flushToDiskInterval: TimeSpan.FromMinutes(2.5),
-                    rollingInterval: RollingInterval.Day,
                     rollOnFileSizeLimit: true,
                     retainedFileCountLimit: 50
                     );
