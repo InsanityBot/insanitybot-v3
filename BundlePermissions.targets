@@ -2,13 +2,13 @@
 <Project InitialTargets="CopyPermissionFiles" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
     <ItemGroup>
-        <_CopyItems Include="../config/permissions/*.*"/>
+        <_PermissionCopyItems Include="../config/permissions/*.*"/>
     </ItemGroup>
 
     <Target Name="CopyPermissionFiles">
         <MakeDir Directories="$(OutputPath)/config/permissions"/>
         <Copy
-            SourceFiles="@(_CopyItems)"
+            SourceFiles="@(_PermissionCopyItems)"
             DestinationFolder="$(OutputPath)/config/permissions"
         />
     </Target>
