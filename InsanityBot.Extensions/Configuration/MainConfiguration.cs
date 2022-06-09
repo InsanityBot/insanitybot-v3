@@ -20,7 +20,7 @@ public class MainConfiguration : IConfiguration
 
     public MainConfiguration(ILogger<MainConfiguration> logger)
     {
-        logger.LogDebug(LoggerEventIds.PermissionConfigurationLoading, "Loading permission configuration from disk...");
+        logger.LogDebug(LoggerEventIds.PermissionConfigurationLoading, "Loading main configuration from disk...");
 
         StreamReader reader = new("./config/main.json");
 
@@ -48,6 +48,6 @@ public class MainConfiguration : IConfiguration
 
         this.HomeGuildId = idPath.Evaluate(this.Configuration).Matches![0].Value.Deserialize<Int64>()!;
 
-        logger.LogDebug(LoggerEventIds.PermissionConfigurationSuccess, "Successfully loaded permission configuration");
+        logger.LogDebug(LoggerEventIds.PermissionConfigurationSuccess, "Successfully loaded main configuration");
     }
 }

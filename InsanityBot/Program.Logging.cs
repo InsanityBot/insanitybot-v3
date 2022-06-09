@@ -7,19 +7,20 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 
 using Serilog;
-using Serilog.Events;
+using Serilog.Templates;
+using Serilog.Templates.Themes;
 
 public static partial class Program
 {
     public const String ConsoleLogFormat =
-        "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}] " +
-        "[{Level}] " +
-        "[{SourceContext}]: {Message}{NewLine}{Exception}";
+        "[{@t:yyyy-MM-dd HH:mm:ss.fff}] " +
+        "[{@l}] " +
+        "[{Coalesce(SourceContext, '<none>')}]: {@m}\n{@x}";
 
     public const String FileLogFormat =
-        "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}] " +
-        "[{Level}] " +
-        "[{SourceContext}]: {Message}{NewLine}{Exception}";
+        "[{@t:yyyy-MM-dd HH:mm:ss.fff}] " +
+        "[{@l}] " +
+        "[{Coalesce(SourceContext, '<none>')}]: {@m}\n{@x}";
 
     private static IHostBuilder addInsanityBotLogging(this IHostBuilder host)
     {
@@ -28,23 +29,18 @@ public static partial class Program
             LoggerConfiguration config = new LoggerConfiguration()
                 .Enrich.WithEnvironmentName()
                 .Enrich.FromLogContext()
-                .WriteTo.Console(outputTemplate: ConsoleLogFormat, restrictedToMinimumLevel:
 #if DEBUG
-                LogEventLevel.Debug)
+                .MinimumLevel.Debug()
 #else
-                LogEventLevel.Information)
+                .MinimumLevel.Information()
 #endif
+                .WriteTo.Console(formatter: new ExpressionTemplate(ConsoleLogFormat, theme: LoggerTheme.Theme))
                 .WriteTo.Map(e => $"{DateOnly.FromDateTime(DateTimeOffset.UtcNow.DateTime):yyyy-MM-dd}",
                 (v, cf) =>
                 {
-                    cf.File($"./logs/insanitybot-{v}.log",
-                    restrictedToMinimumLevel:
-#if DEBUG
-                    LogEventLevel.Debug,
-#else
-                    LogEventLevel.Information,
-#endif
-                    outputTemplate: FileLogFormat,
+                    cf.File(
+                    new ExpressionTemplate(FileLogFormat),
+                    $"./logs/insanitybot-{v}.log",
                     // 32 megabytes
                     fileSizeLimitBytes: 33_554_432,
                     flushToDiskInterval: TimeSpan.FromMinutes(2.5),
