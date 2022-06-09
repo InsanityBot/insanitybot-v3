@@ -24,6 +24,8 @@ public class UnsafeConfiguration : IConfiguration
             CommentHandling = JsonCommentHandling.Allow
         });
 
+        reader.Close();
+
         // TODO: backup config handling
         // TODO: Datafixer calls
 

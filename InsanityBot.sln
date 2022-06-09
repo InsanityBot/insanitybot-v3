@@ -20,12 +20,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configurat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dev", "Dev", "{703AD795-B612-430A-963E-D67F63B3E4EC}"
 	ProjectSection(SolutionItems) = preProject
+		config\dev\main.json = config\dev\main.json
 		config\dev\permissions.json = config\dev\permissions.json
 		config\dev\unsafe.json = config\dev\unsafe.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Release", "Release", "{7BCD5576-2E67-42F6-A5DA-AF84DAE1AC79}"
 	ProjectSection(SolutionItems) = preProject
+		config\release\main.json = config\release\main.json
 		config\release\permissions.json = config\release\permissions.json
 		config\release\unsafe.json = config\release\unsafe.json
 	EndProjectSection

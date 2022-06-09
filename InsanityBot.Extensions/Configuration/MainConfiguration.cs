@@ -8,16 +8,21 @@ using Json.Path;
 
 using Microsoft.Extensions.Logging;
 
-public class PermissionConfiguration : IConfiguration
+public class MainConfiguration : IConfiguration
 {
     public JsonElement Configuration { get; set; }
-    public String DataVersion { get; set; }
 
-    public PermissionConfiguration(ILogger<IConfiguration> logger)
+    public String DataVersion { get; set; } = null!;
+
+    public String Token { get; set; } = null!;
+
+    public Int64 HomeGuildId { get; set; }
+
+    public MainConfiguration(ILogger<IConfiguration> logger)
     {
         logger.LogDebug(LoggerEventIds.PermissionConfigurationLoading, "Loading permission configuration from disk...");
 
-        StreamReader reader = new("./config/permissions.json");
+        StreamReader reader = new("./config/main.json");
 
         JsonDocument fullFile = JsonDocument.Parse(reader.ReadToEnd(), new JsonDocumentOptions()
         {
@@ -35,7 +40,14 @@ public class PermissionConfiguration : IConfiguration
 
         this.DataVersion = versionPath.Evaluate(this.Configuration).Matches![0].Value.Deserialize<String>()!;
 
+        JsonPath tokenPath = JsonPath.Parse("$.token");
+
+        this.Token = tokenPath.Evaluate(this.Configuration).Matches![0].Value.Deserialize<String>()!;
+
+        JsonPath idPath = JsonPath.Parse("$.home_guild_id");
+
+        this.HomeGuildId = tokenPath.Evaluate(this.Configuration).Matches![0].Value.Deserialize<Int64>()!;
+
         logger.LogDebug(LoggerEventIds.PermissionConfigurationSuccess, "Successfully loaded permission configuration");
     }
 }
-

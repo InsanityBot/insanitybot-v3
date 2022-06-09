@@ -10,8 +10,6 @@ using InsanityBot.Extensions.Permissions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using Serilog;
-
 using Starnight.Internal.Rest;
 
 public static partial class Program
