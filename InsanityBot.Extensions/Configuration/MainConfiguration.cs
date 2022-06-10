@@ -42,8 +42,8 @@ public class MainConfiguration : IConfiguration
             {
                 reader.Close();
 
-                logger.LogError("\n\tMain configuration could not be parsed, downloading from source tree.\n\t" +
-                    "This will reset all previously specified options.\n\t" +
+                logger.LogError("Main configuration could not be parsed, downloading from source tree. " +
+                    "This will reset all previously specified options. " +
                     "You will need to specify at least a token and a home guild ID and then restart InsanityBot.");
 
                 String commitHash = Assembly.GetExecutingAssembly().GetCustomAttributes<AssemblyMetadataAttribute>()
@@ -60,8 +60,8 @@ public class MainConfiguration : IConfiguration
         }
         else
         {
-            logger.LogWarning("\n\tNo main configuration found, downloading from source tree.\n\t" +
-                "This will reset all previously specified options.\n\t" +
+            logger.LogWarning("No main configuration found, downloading from source tree. " +
+                "This will reset all previously specified options. " +
                 "You will need to specify at least a token and a home guild ID and then restart InsanityBot.");
 
             String commitHash = Assembly.GetExecutingAssembly().GetCustomAttributes<AssemblyMetadataAttribute>()
