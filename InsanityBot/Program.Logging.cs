@@ -36,19 +36,21 @@ public static partial class Program
                 .MinimumLevel.Information()
 #endif
                 .WriteTo.Console(formatter: new ExpressionTemplate(ConsoleLogFormat, theme: LoggerTheme.Theme))
-                .WriteTo.Map(e => $"{DateOnly.FromDateTime(DateTimeOffset.UtcNow.DateTime):yyyy-MM-dd}",
-                (v, cf) =>
-                {
-                    cf.File(
-                    new ExpressionTemplate(FileLogFormat),
-                    $"./logs/insanitybot-{v}.log",
-                    // 32 megabytes
-                    fileSizeLimitBytes: 33_554_432,
-                    flushToDiskInterval: TimeSpan.FromMinutes(2.5),
-                    rollOnFileSizeLimit: true,
-                    retainedFileCountLimit: 50
-                    );
-                });
+                .WriteTo.Map(
+                    e => $"{DateOnly.FromDateTime(DateTimeOffset.UtcNow.DateTime):yyyy-MM-dd}",
+                    (v, cf) =>
+                    {
+                        cf.File(
+                        new ExpressionTemplate(FileLogFormat),
+                        $"./logs/insanitybot-{v}.log",
+                        // 32 megabytes
+                        fileSizeLimitBytes: 33_554_432,
+                        flushToDiskInterval: TimeSpan.FromMinutes(2.5),
+                        rollOnFileSizeLimit: true,
+                        retainedFileCountLimit: 50
+                        );
+                    },
+                    sinkMapCountLimit: 1);
 
             Log.Logger = config.CreateLogger();
 
