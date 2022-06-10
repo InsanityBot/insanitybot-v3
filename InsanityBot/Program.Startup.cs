@@ -1,6 +1,7 @@
 namespace InsanityBot;
 
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -19,6 +20,15 @@ public static partial class Program
 {
     public static async Task Main(String[] argv)
     {
+        String gitDesc = Assembly.GetExecutingAssembly().GetCustomAttributes<AssemblyMetadataAttribute>()
+            .Where(xm => xm.Key == "git-tree-state")
+            .First()
+            .Value!;
+
+        String version = Assembly.GetExecutingAssembly().GetName().Version!.ToString();
+
+        Console.Title = $"InsanityBot {version}+{gitDesc}";
+
         IHostBuilder hostBuilder = Host
             .CreateDefaultBuilder(argv)
             .UseConsoleLifetime();
