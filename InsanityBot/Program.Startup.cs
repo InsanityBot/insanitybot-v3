@@ -30,6 +30,7 @@ public static partial class Program
         hostBuilder.ConfigureServices(async services =>
         {
             services.AddMemoryCache();
+            services.AddHttpClient();
             services.AddSingleton<IDatafixerService, DataFixerUpper>();
 
             IServiceProvider provider = services.BuildServiceProvider();

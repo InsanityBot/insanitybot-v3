@@ -19,10 +19,10 @@ using Spectre.Console;
 
 public class DataFixerUpper : IDatafixerService
 {
-    private readonly Microsoft.Extensions.Logging.ILogger<IDatafixerService> __logger;
+    private readonly ILogger<IDatafixerService> __logger;
     private readonly ConcurrentDictionary<Type, ConcurrentBag<IDatafixer>> __sorted_datafixers;
 
-    public DataFixerUpper(Microsoft.Extensions.Logging.ILogger<IDatafixerService> logger)
+    public DataFixerUpper(ILogger<IDatafixerService> logger)
     {
         this.__logger = logger;
         this.__sorted_datafixers = new();

@@ -2,6 +2,9 @@ namespace InsanityBot.Extensions.Configuration;
 
 using System;
 using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Reflection;
 using System.Text.Json;
 
 using Json.Path;
@@ -18,20 +21,59 @@ public class MainConfiguration : IConfiguration
 
     public Int64 HomeGuildId { get; set; }
 
-    public MainConfiguration(ILogger<MainConfiguration> logger)
+    public MainConfiguration(ILogger<MainConfiguration> logger, HttpClient client)
     {
-        logger.LogDebug(LoggerEventIds.PermissionConfigurationLoading, "Loading main configuration from disk...");
+        logger.LogDebug("Loading main configuration from disk...");
 
-        StreamReader reader = new("./config/main.json");
+        JsonDocument fullFile;
 
-        JsonDocument fullFile = JsonDocument.Parse(reader.ReadToEnd(), new JsonDocumentOptions()
+        if(File.Exists("./config/main.json"))
         {
-            CommentHandling = JsonCommentHandling.Skip
-        });
+            StreamReader reader = new("./config/main.json");
 
-        reader.Close();
+            try
+            {
+                fullFile = JsonDocument.Parse(reader.ReadToEnd(), new JsonDocumentOptions()
+                {
+                    CommentHandling = JsonCommentHandling.Skip
+                });
+            }
+            catch(JsonException e)
+            {
+                reader.Close();
 
-        // TODO: backup config handling
+                logger.LogError(e, "\n\tMain configuration could not be parsed, downloading from source tree.\n\t" +
+                    "This will reset all previously specified options.\n\t" +
+                    "You will need to specify at least a token and a home guild ID and then restart InsanityBot.");
+
+                String commitHash = Assembly.GetExecutingAssembly().GetCustomAttributes<AssemblyMetadataAttribute>()
+                .Where(xm => xm.Key == "git-revision-hash")
+                .First()
+                .Value!;
+
+                fullFile = ConfigurationDownloader.DownloadConfiguration(commitHash, "main", client).Result;
+
+                logger.LogInformation("Main configuration was successfully restored from the source tree.");
+            }
+
+            reader.Close();
+        }
+        else
+        {
+            logger.LogWarning("\n\tNo main configuration found, downloading from source tree.\n\t" +
+                "This will reset all previously specified options.\n\t" +
+                "You will need to specify at least a token and a home guild ID and then restart InsanityBot.");
+
+            String commitHash = Assembly.GetExecutingAssembly().GetCustomAttributes<AssemblyMetadataAttribute>()
+                .Where(xm => xm.Key == "git-revision-hash")
+                .First()
+                .Value!;
+
+            fullFile = ConfigurationDownloader.DownloadConfiguration(commitHash, "main", client).Result;
+
+            logger.LogInformation("Main configuration was successfully restored from the source tree.");
+        }
+
         // TODO: Datafixer calls
 
         this.Configuration = fullFile.RootElement;
@@ -48,6 +90,6 @@ public class MainConfiguration : IConfiguration
 
         this.HomeGuildId = idPath.Evaluate(this.Configuration).Matches![0].Value.Deserialize<Int64>()!;
 
-        logger.LogDebug(LoggerEventIds.PermissionConfigurationSuccess, "Successfully loaded main configuration");
+        logger.LogDebug("Successfully loaded main configuration");
     }
 }

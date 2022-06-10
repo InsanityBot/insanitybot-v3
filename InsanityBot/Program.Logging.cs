@@ -35,6 +35,7 @@ public static partial class Program
 #else
                 .MinimumLevel.Information()
 #endif
+                .MinimumLevel.Override("System.Net.Http.HttpClient", LogEventLevel.Warning)
                 .WriteTo.Console(formatter: new ExpressionTemplate(ConsoleLogFormat, theme: LoggerTheme.Theme))
                 .WriteTo.Map(
                     e => $"{DateOnly.FromDateTime(DateTimeOffset.UtcNow.DateTime):yyyy-MM-dd}",

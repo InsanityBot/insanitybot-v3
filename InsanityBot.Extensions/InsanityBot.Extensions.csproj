@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <Import Project="../InsanityBot.targets" />
+    <Import Project="../BundleGitInfo.targets" />
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
@@ -23,6 +24,8 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0-preview.4.22229.4" />
         <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0-preview.4.22229.4" />
         <PackageReference Include="Microsoft.Extensions.Primitives" Version="7.0.0-preview.4.22229.4" />
+        
+        <PackageReference Include="Spectre.Console.Extensions.Progress" Version="1.0.0" />
         
         <PackageReference Include="Starnight" Version="0.1.0-dev.201" />
     </ItemGroup>
