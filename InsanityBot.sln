@@ -36,6 +36,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Items", "Build Items"
 	ProjectSection(SolutionItems) = preProject
 		BundleConfigs.targets = BundleConfigs.targets
 		BundleGitInfo.targets = BundleGitInfo.targets
+		BundlePermissions.targets = BundlePermissions.targets
 		InsanityBot.targets = InsanityBot.targets
 	EndProjectSection
 EndProject
