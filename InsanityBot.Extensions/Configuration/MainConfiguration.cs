@@ -38,11 +38,11 @@ public class MainConfiguration : IConfiguration
                     CommentHandling = JsonCommentHandling.Skip
                 });
             }
-            catch(JsonException e)
+            catch
             {
                 reader.Close();
 
-                logger.LogError(e, "\n\tMain configuration could not be parsed, downloading from source tree.\n\t" +
+                logger.LogError("\n\tMain configuration could not be parsed, downloading from source tree.\n\t" +
                     "This will reset all previously specified options.\n\t" +
                     "You will need to specify at least a token and a home guild ID and then restart InsanityBot.");
 
