@@ -6,7 +6,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
+using System.Threading.Tasks;
 
+using InsanityBot.Extensions.Datafixers;
+
+using Json.More;
 using Json.Path;
 
 using Microsoft.Extensions.Logging;
@@ -21,7 +25,12 @@ public class MainConfiguration : IConfiguration
 
     public Int64 HomeGuildId { get; set; }
 
-    public MainConfiguration(ILogger<MainConfiguration> logger, HttpClient client)
+    public MainConfiguration
+    (
+        ILogger<MainConfiguration> logger,
+        HttpClient client,
+        IDatafixerService datafixer
+    )
     {
         logger.LogDebug("Loading main configuration from disk...");
 
@@ -76,8 +85,6 @@ public class MainConfiguration : IConfiguration
             logger.LogInformation("Main configuration was successfully restored from the source tree.");
         }
 
-        // TODO: Datafixer calls
-
         this.Configuration = fullFile.RootElement;
 
         JsonPath versionPath = JsonPath.Parse("$.data_version");
@@ -93,5 +100,18 @@ public class MainConfiguration : IConfiguration
         this.HomeGuildId = idPath.Evaluate(this.Configuration).Matches![0].Value.Deserialize<Int64>()!;
 
         logger.LogDebug("Successfully loaded main configuration");
+
+        datafixer.ApplyDatafixers(this);
+
+        // lastly, save the now-datafixed config
+
+        _ = Task.Run(() =>
+        {
+            StreamWriter writer = new("./config/main.json");
+
+            writer.Write(this.Configuration.ToJsonString());
+
+            writer.Close();
+        });
     }
 }

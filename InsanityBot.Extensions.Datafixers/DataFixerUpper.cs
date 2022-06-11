@@ -200,15 +200,15 @@ public class DataFixerUpper : IDatafixerService
         return ActivatorUtilities.CreateInstance(services, type);
     }
 
-    public ValueTask<Boolean> ApplyDatafixers<Datafixable>(ref Datafixable datafixable)
-        where Datafixable : IDatafixable
+    public Boolean ApplyDatafixers<Datafixable>(Datafixable datafixable)
+        where Datafixable : class, IDatafixable
     {
         this.__logger.LogInformation("Starting datafixer operation for {datafixableType}", typeof(Datafixable));
 
         if(!this.__sorted_datafixers.ContainsKey(typeof(Datafixable)))
         {
             this.__logger.LogInformation("No applicable datafixers were found for {datafixableType}, returning", typeof(Datafixable));
-            return ValueTask.FromResult(true);
+            return true;
         }
 
         String currentVersion = datafixable.DataVersion;
@@ -229,6 +229,6 @@ public class DataFixerUpper : IDatafixerService
 
         } while(true);
 
-        return ValueTask.FromResult(true);
+        return true;
     }
 }

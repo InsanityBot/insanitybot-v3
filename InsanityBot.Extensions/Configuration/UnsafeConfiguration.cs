@@ -6,7 +6,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
+using System.Threading.Tasks;
 
+using InsanityBot.Extensions.Datafixers;
+
+using Json.More;
 using Json.Path;
 
 using Microsoft.Extensions.Logging;
@@ -16,7 +20,12 @@ public class UnsafeConfiguration : IConfiguration
     public JsonElement Configuration { get; set; }
     public String DataVersion { get; set; }
 
-    public UnsafeConfiguration(ILogger<UnsafeConfiguration> logger, HttpClient client)
+    public UnsafeConfiguration
+    (
+        ILogger<UnsafeConfiguration> logger,
+        HttpClient client,
+        IDatafixerService datafixer
+    )
     {
         logger.LogDebug(LoggerEventIds.UnsafeConfigurationLoading, "Loading unsafe configuration from disk...");
 
@@ -78,5 +87,18 @@ public class UnsafeConfiguration : IConfiguration
         this.DataVersion = versionPath.Evaluate(this.Configuration).Matches![0].Value.Deserialize<String>()!;
 
         logger.LogDebug(LoggerEventIds.UnsafeConfigurationSuccess, "Successfully loaded unsafe configuration");
+
+        datafixer.ApplyDatafixers(this);
+
+        // lastly, save the now-datafixed config
+
+        _ = Task.Run(() =>
+        {
+            StreamWriter writer = new("./config/unsafe.json");
+
+            writer.Write(this.Configuration.ToJsonString());
+
+            writer.Close();
+        });
     }
 }

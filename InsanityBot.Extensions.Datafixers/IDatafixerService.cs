@@ -10,6 +10,6 @@ public interface IDatafixerService
 {
     public ValueTask DiscoverDatafixers(IServiceProvider services, params Assembly[] assemblies);
 
-    public ValueTask<Boolean> ApplyDatafixers<Datafixable>(ref Datafixable datafixable)
-        where Datafixable : IDatafixable;
+    public Boolean ApplyDatafixers<Datafixable>(Datafixable datafixable)
+        where Datafixable : class, IDatafixable;
 }
