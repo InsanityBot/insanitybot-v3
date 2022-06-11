@@ -13,6 +13,8 @@ public class LoggerTheme
         [TemplateThemeStyle.LevelInformation] = "\u001b[38;5;141m",
         [TemplateThemeStyle.LevelError] = "\u001b[38;5;196m",
         [TemplateThemeStyle.LevelFatal] = "\u001b[38;5;88m",
+
+        [TemplateThemeStyle.String] = "\u001b[38;5;159m"
     };
 
     public static TemplateTheme Theme { get; } = new(TemplateTheme.Literate, ThemeStyles);

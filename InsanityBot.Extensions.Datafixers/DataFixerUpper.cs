@@ -203,11 +203,11 @@ public class DataFixerUpper : IDatafixerService
     public ValueTask<Boolean> ApplyDatafixers<Datafixable>(ref Datafixable datafixable)
         where Datafixable : IDatafixable
     {
-        Log.Logger.Information($"Starting datafixer operation for {typeof(Datafixable)}");
+        this.__logger.LogInformation("Starting datafixer operation for {datafixableType}", typeof(Datafixable));
 
         if(!this.__sorted_datafixers.ContainsKey(typeof(Datafixable)))
         {
-            Log.Logger.Information("No applicable datafixers were found, returning");
+            this.__logger.LogInformation("No applicable datafixers were found for {datafixableType}, returning", typeof(Datafixable));
             return ValueTask.FromResult(true);
         }
 
