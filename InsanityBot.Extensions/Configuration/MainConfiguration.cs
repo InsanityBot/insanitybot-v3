@@ -47,16 +47,18 @@ public class MainConfiguration : IConfiguration
                     "You will need to specify at least a token and a home guild ID and then restart InsanityBot.");
 
                 String commitHash = Assembly.GetExecutingAssembly().GetCustomAttributes<AssemblyMetadataAttribute>()
-                .Where(xm => xm.Key == "git-revision-hash")
-                .First()
-                .Value!;
+                    .Where(xm => xm.Key == "git-revision-hash")
+                    .First()
+                    .Value!;
 
                 fullFile = ConfigurationDownloader.DownloadConfiguration(commitHash, "main", client).Result;
 
                 logger.LogInformation("Main configuration was successfully restored from the source tree.");
             }
-
-            reader.Close();
+            finally
+            {
+                reader.Close();
+            }
         }
         else
         {

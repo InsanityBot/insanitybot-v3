@@ -2,6 +2,9 @@ namespace InsanityBot.Extensions.Configuration;
 
 using System;
 using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Reflection;
 using System.Text.Json;
 
 using Json.Path;
@@ -13,20 +16,59 @@ public class PermissionConfiguration : IConfiguration
     public JsonElement Configuration { get; set; }
     public String DataVersion { get; set; }
 
-    public PermissionConfiguration(ILogger<PermissionConfiguration> logger)
+    public PermissionConfiguration(ILogger<PermissionConfiguration> logger, HttpClient client)
     {
         logger.LogDebug(LoggerEventIds.PermissionConfigurationLoading, "Loading permission configuration from disk...");
 
-        StreamReader reader = new("./config/permissions.json");
+        JsonDocument fullFile;
 
-        JsonDocument fullFile = JsonDocument.Parse(reader.ReadToEnd(), new JsonDocumentOptions()
+        if(File.Exists("./config/permissions.json"))
         {
-            CommentHandling = JsonCommentHandling.Skip
-        });
+            StreamReader reader = new("./config/permissions.json");
 
-        reader.Close();
+            try
+            {
+                fullFile = JsonDocument.Parse(reader.ReadToEnd(), new JsonDocumentOptions()
+                {
+                    CommentHandling = JsonCommentHandling.Skip
+                });
+            }
+            catch
+            {
+                reader.Close();
 
-        // TODO: backup config handling
+                logger.LogError("Permission configuration could not be parsed, downloading from source tree. " +
+                    "This will reset all previously specified options.");
+
+                String commitHash = Assembly.GetExecutingAssembly().GetCustomAttributes<AssemblyMetadataAttribute>()
+                    .Where(xm => xm.Key == "git-revision-hash")
+                    .First()
+                    .Value!;
+
+                fullFile = ConfigurationDownloader.DownloadConfiguration(commitHash, "permissions", client).Result;
+
+                logger.LogInformation("Permission configuration was successfully restored from the source tree.");
+            }
+            finally
+            {
+                reader.Close();
+            }
+        }
+        else
+        {
+            logger.LogWarning("No permission configuration found, downloading from source tree. " +
+                "This will reset all previously specified options.");
+
+            String commitHash = Assembly.GetExecutingAssembly().GetCustomAttributes<AssemblyMetadataAttribute>()
+                .Where(xm => xm.Key == "git-revision-hash")
+                .First()
+                .Value!;
+
+            fullFile = ConfigurationDownloader.DownloadConfiguration(commitHash, "permissions", client).Result;
+
+            logger.LogInformation("Permission configuration was successfully restored from the source tree.");
+        }
+
         // TODO: Datafixer calls
 
         this.Configuration = fullFile.RootElement;

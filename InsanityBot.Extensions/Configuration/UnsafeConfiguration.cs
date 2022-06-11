@@ -2,6 +2,9 @@ namespace InsanityBot.Extensions.Configuration;
 
 using System;
 using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Reflection;
 using System.Text.Json;
 
 using Json.Path;
@@ -13,20 +16,59 @@ public class UnsafeConfiguration : IConfiguration
     public JsonElement Configuration { get; set; }
     public String DataVersion { get; set; }
 
-    public UnsafeConfiguration(ILogger<UnsafeConfiguration> logger)
+    public UnsafeConfiguration(ILogger<UnsafeConfiguration> logger, HttpClient client)
     {
         logger.LogDebug(LoggerEventIds.UnsafeConfigurationLoading, "Loading unsafe configuration from disk...");
 
-        StreamReader reader = new("./config/unsafe.json");
+        JsonDocument fullFile;
 
-        JsonDocument fullFile = JsonDocument.Parse(reader.ReadToEnd(), new JsonDocumentOptions()
+        if(File.Exists("./config/unsafe.json"))
         {
-            CommentHandling = JsonCommentHandling.Skip
-        });
+            StreamReader reader = new("./config/unsafe.json");
 
-        reader.Close();
+            try
+            {
+                fullFile = JsonDocument.Parse(reader.ReadToEnd(), new JsonDocumentOptions()
+                {
+                    CommentHandling = JsonCommentHandling.Skip
+                });
+            }
+            catch
+            {
+                reader.Close();
 
-        // TODO: backup config handling
+                logger.LogError("Unsafe configuration could not be parsed, downloading from source tree. " +
+                    "This will reset all previously specified options.");
+
+                String commitHash = Assembly.GetExecutingAssembly().GetCustomAttributes<AssemblyMetadataAttribute>()
+                    .Where(xm => xm.Key == "git-revision-hash")
+                    .First()
+                    .Value!;
+
+                fullFile = ConfigurationDownloader.DownloadConfiguration(commitHash, "unsafe", client).Result;
+
+                logger.LogInformation("Unsafe configuration was successfully restored from the source tree.");
+            }
+            finally
+            {
+                reader.Close();
+            }
+        }
+        else
+        {
+            logger.LogWarning("No unsafe configuration found, downloading from source tree. " +
+                "This will reset all previously specified options.");
+
+            String commitHash = Assembly.GetExecutingAssembly().GetCustomAttributes<AssemblyMetadataAttribute>()
+                .Where(xm => xm.Key == "git-revision-hash")
+                .First()
+                .Value!;
+
+            fullFile = ConfigurationDownloader.DownloadConfiguration(commitHash, "unsafe", client).Result;
+
+            logger.LogInformation("Unsafe configuration was successfully restored from the source tree.");
+        }
+
         // TODO: Datafixer calls
 
         this.Configuration = fullFile.RootElement;
