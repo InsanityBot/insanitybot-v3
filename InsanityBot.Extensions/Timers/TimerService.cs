@@ -39,7 +39,7 @@ public class TimerService
         }
 
         IEnumerable<String> files = Directory.GetFiles("./cache/timers/")
-            .Where(xm => xm.StartsWith("t-"));
+            .Where(xm => xm.StartsWith("./cache/timers/t-"));
 
         IEnumerable<TimedObject> timers = files
             .AsParallel()

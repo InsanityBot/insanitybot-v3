@@ -42,11 +42,12 @@ public static partial class Program
         {
             services.AddMemoryCache();
             services.AddHttpClient();
-            services.AddSingleton<TimerService>()
-                .AddSingleton<IDatafixerService, DataFixerUpper>();
+            services.AddSingleton<IDatafixerService, DataFixerUpper>();
+            services.AddSingleton<TimerService>();
 
             IServiceProvider provider = services.BuildServiceProvider();
 
+            // make sure this stays in this order
             DataFixerUpper dataFixerUpper = (DataFixerUpper)provider.GetRequiredService<IDatafixerService>();
 
             await dataFixerUpper.DiscoverDatafixers(services.BuildServiceProvider(), Assembly.GetExecutingAssembly());
