@@ -20,6 +20,9 @@ public class TimerService
 
     public AsyncEvent<TimerService, TimedObject> TimerExpiredEvent { get; } = new();
 
+    // specifies the timers expired *before* the service was first loaded, with a 10 second buffer
+    public List<TimedObject> ExpiredTimers { get; private set; }
+
     public TimerService
     (
         ILogger<TimerService> logger,
@@ -29,6 +32,8 @@ public class TimerService
     {
         this.__logger = logger;
         this.__cache = cache;
+
+        this.ExpiredTimers = new();
 
         this.TimerExpiredEvent.ExceptionHandlers += this.handleEventException;
 
@@ -63,6 +68,16 @@ public class TimerService
                 });
 
                 return timer;
+            })
+            .Where(xm =>
+            {
+                // give us some buffer so all of our un-doing services can get to work
+                if(xm.Expiry <= DateTimeOffset.UtcNow + TimeSpan.FromSeconds(10))
+                {
+                    this.ExpiredTimers.Add(xm);
+                    return false;
+                }
+                return true;
             })
             .AsEnumerable();
 
