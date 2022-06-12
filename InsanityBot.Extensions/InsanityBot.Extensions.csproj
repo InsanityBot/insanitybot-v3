@@ -28,6 +28,8 @@
         <PackageReference Include="Spectre.Console.Extensions.Progress" Version="1.0.0" />
         
         <PackageReference Include="Starnight" Version="0.1.0-dev.201" />
+        
+        <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.0-preview1.22261.2" />
     </ItemGroup>
 
     <ItemGroup>
