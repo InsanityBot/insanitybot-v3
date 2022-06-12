@@ -8,6 +8,8 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
+using InsanityBot.Extensions.Datafixers;
+
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
@@ -21,7 +23,8 @@ public class TimerService
     public TimerService
     (
         ILogger<TimerService> logger,
-        IMemoryCache cache
+        IMemoryCache cache,
+        IDatafixerService datafixer
     )
     {
         this.__logger = logger;
@@ -47,6 +50,18 @@ public class TimerService
                 TimedObject timer = JsonSerializer.Deserialize<TimedObject>(reader.ReadToEnd())!;
 
                 reader.Close();
+
+                datafixer.ApplyDatafixers(timer);
+
+                _ = Task.Run(() =>
+                {
+                    StreamWriter writer = new(xm);
+
+                    writer.Write(JsonSerializer.Serialize(timer));
+
+                    writer.Close();
+                });
+
                 return timer;
             })
             .AsEnumerable();
