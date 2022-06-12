@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using InsanityBot.Extensions.Configuration;
 using InsanityBot.Extensions.Datafixers;
 using InsanityBot.Extensions.Permissions;
+using InsanityBot.Extensions.Timers;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -41,13 +42,17 @@ public static partial class Program
         {
             services.AddMemoryCache();
             services.AddHttpClient();
-            services.AddSingleton<IDatafixerService, DataFixerUpper>();
+            services.AddSingleton<TimerService>()
+                .AddSingleton<IDatafixerService, DataFixerUpper>();
 
             IServiceProvider provider = services.BuildServiceProvider();
 
             DataFixerUpper dataFixerUpper = (DataFixerUpper)provider.GetRequiredService<IDatafixerService>();
 
             await dataFixerUpper.DiscoverDatafixers(services.BuildServiceProvider(), Assembly.GetExecutingAssembly());
+
+            // we need the timer service to initialize early
+            _ = provider.GetRequiredService<TimerService>();
         });
 
         String token = "";

@@ -203,11 +203,11 @@ public class DataFixerUpper : IDatafixerService
     public Boolean ApplyDatafixers<Datafixable>(Datafixable datafixable)
         where Datafixable : class, IDatafixable
     {
-        this.__logger.LogInformation("Starting datafixer operation for {datafixableType}", typeof(Datafixable));
+        this.__logger.LogDebug("Starting datafixer operation for {datafixableType}", typeof(Datafixable));
 
         if(!this.__sorted_datafixers.ContainsKey(typeof(Datafixable)))
         {
-            this.__logger.LogInformation("No applicable datafixers were found for {datafixableType}, returning", typeof(Datafixable));
+            this.__logger.LogDebug("No applicable datafixers were found for {datafixableType}, returning", typeof(Datafixable));
             return true;
         }
 
