@@ -54,12 +54,29 @@ public class TimerService
         Parallel.ForEach(timers, xm =>
         {
             this.__cache.CreateEntry(xm.Guid)
-                .SetAbsoluteExpiration(xm.Expiry - DateTimeOffset.UtcNow)
+                .SetAbsoluteExpiration(xm.Expiry)
                 .SetValue(xm)
                 .RegisterPostEvictionCallback(handleEviction);
         });
 
-        this.__logger.LogInformation("Timer service successfully initialized");
+        this.__logger.LogInformation("Timer service successfully initialized, {count} timers were loaded", timers.Count());
+    }
+
+    public void Register(TimedObject timer)
+    {
+        _ = Task.Run(() =>
+        {
+            this.__cache.CreateEntry(timer.Guid)
+                .SetAbsoluteExpiration(timer.Expiry)
+                .SetValue(timer)
+                .RegisterPostEvictionCallback(handleEviction);
+        });
+
+        StreamWriter writer = new(File.Create($"./cache/timers/{timer.Guid}"));
+
+        writer.Write(JsonSerializer.Serialize(timer));
+
+        writer.Close();
     }
 
     private void handleEviction(Object key, Object? value, EvictionReason reason, Object? state)
