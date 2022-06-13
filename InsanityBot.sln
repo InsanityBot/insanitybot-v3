@@ -37,6 +37,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Items", "Build Items"
 		BundleConfigs.targets = BundleConfigs.targets
 		BundleGitInfo.targets = BundleGitInfo.targets
 		BundlePermissions.targets = BundlePermissions.targets
+		IncludeLocalizations.targets = IncludeLocalizations.targets
 		InsanityBot.targets = InsanityBot.targets
 	EndProjectSection
 EndProject
@@ -48,6 +49,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Permissions", "Permissions"
 	ProjectSection(SolutionItems) = preProject
 		config\permissions\dummy.json = config\permissions\dummy.json
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InsanityBot.Extensions.Localization", "InsanityBot.Extensions.Localization\InsanityBot.Extensions.Localization.csproj", "{7240C568-9F4E-48E4-BA84-0443EBFA1D5B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,6 +82,10 @@ Global
 		{E9314834-8489-4A20-99EE-5EF2D4600A70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9314834-8489-4A20-99EE-5EF2D4600A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9314834-8489-4A20-99EE-5EF2D4600A70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7240C568-9F4E-48E4-BA84-0443EBFA1D5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7240C568-9F4E-48E4-BA84-0443EBFA1D5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7240C568-9F4E-48E4-BA84-0443EBFA1D5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7240C568-9F4E-48E4-BA84-0443EBFA1D5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
