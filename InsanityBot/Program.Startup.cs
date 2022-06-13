@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using InsanityBot.Extensions.Configuration;
 using InsanityBot.Extensions.Datafixers;
+using InsanityBot.Extensions.Infractions;
 using InsanityBot.Extensions.Permissions;
 using InsanityBot.Extensions.Timers;
 
@@ -41,9 +42,12 @@ public static partial class Program
         hostBuilder.ConfigureServices(async services =>
         {
             services.AddMemoryCache();
+
             services.AddHttpClient();
             services.AddSingleton<IDatafixerService, DataFixerUpper>();
             services.AddSingleton<TimerService>();
+
+            services.AddSingleton<InfractionService>();
 
             IServiceProvider provider = services.BuildServiceProvider();
 
