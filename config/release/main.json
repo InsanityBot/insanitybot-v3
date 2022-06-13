@@ -8,6 +8,11 @@
                 "permissions": {
                     "permission_service": "default"
                 }
+            },
+            "moderation": {
+                "infractions": {
+                    "cache_expiration": "00:10:00"
+                }
             }
         }
     }

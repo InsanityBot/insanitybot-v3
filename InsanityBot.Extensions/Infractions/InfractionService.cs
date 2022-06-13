@@ -5,6 +5,8 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 
+using InsanityBot.Extensions.Configuration;
+
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
@@ -14,11 +16,17 @@ public class InfractionService
 {
     private readonly ILogger<InfractionService> __logger;
     private readonly IMemoryCache __cache;
+    private readonly IConfiguration __configuration;
 
-    public InfractionService(ILogger<InfractionService> logger, IMemoryCache cache)
+    private readonly TimeSpan __cache_expiration;
+
+    public InfractionService(ILogger<InfractionService> logger, IMemoryCache cache, MainConfiguration configuration)
     {
         this.__logger = logger;
         this.__cache = cache;
+        this.__configuration = configuration;
+
+        this.__cache_expiration = this.__configuration.Value<TimeSpan>("insanitybot.moderation.infractions.cache_expiration");
     }
 
     public void SetInfractions(Int64 userId, InfractionCollection infractions)
@@ -26,6 +34,7 @@ public class InfractionService
         this.__cache.GetOrCreate(getCacheKey(userId), xm =>
         {
             xm.SetValue(infractions);
+            xm.SetSlidingExpiration(this.__cache_expiration);
             return infractions;
         });
 
@@ -41,6 +50,7 @@ public class InfractionService
         this.__cache.GetOrCreate(getCacheKey(user.Id), xm =>
         {
             xm.SetValue(infractions);
+            xm.SetSlidingExpiration(this.__cache_expiration);
             return infractions;
         });
 
@@ -70,6 +80,7 @@ public class InfractionService
             InfractionCollection collection = JsonSerializer.Deserialize<InfractionCollection>(reader.ReadToEnd())!;
 
             this.__cache.CreateEntry(getCacheKey(userId))
+                .SetSlidingExpiration(this.__cache_expiration)
                 .SetValue(collection);
 
             reader.Close();
@@ -100,6 +111,7 @@ public class InfractionService
             collection = JsonSerializer.Deserialize<InfractionCollection>(reader.ReadToEnd())!;
 
             this.__cache.CreateEntry(getCacheKey(user.Id))
+                .SetSlidingExpiration(this.__cache_expiration)
                 .SetValue(collection);
 
             reader.Close();
@@ -130,6 +142,7 @@ public class InfractionService
             writer.Close();
 
             this.__cache.CreateEntry(getCacheKey(userId))
+                .SetSlidingExpiration(this.__cache_expiration)
                 .SetValue(infractions);
 
             this.__logger.LogDebug("Created infraction file for {userId}", userId);
@@ -161,6 +174,7 @@ public class InfractionService
             writer.Close();
 
             this.__cache.CreateEntry(getCacheKey(user.Id))
+                .SetSlidingExpiration(this.__cache_expiration)
                 .SetValue(infractions);
 
             this.__logger.LogDebug("Created infraction file for {username}#{discriminator} ({id})",

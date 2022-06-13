@@ -11,6 +11,7 @@ using InsanityBot.Extensions.Infractions;
 using InsanityBot.Extensions.Permissions;
 using InsanityBot.Extensions.Timers;
 
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -41,7 +42,11 @@ public static partial class Program
 
         hostBuilder.ConfigureServices(async services =>
         {
-            services.AddMemoryCache();
+            services.AddMemoryCache()
+                .Configure<MemoryCacheOptions>(xm =>
+                {
+                    xm.TrackStatistics = true;
+                });
 
             services.AddHttpClient();
             services.AddSingleton<IDatafixerService, DataFixerUpper>();
