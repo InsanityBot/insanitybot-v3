@@ -36,8 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Items", "Build Items"
 	ProjectSection(SolutionItems) = preProject
 		BundleConfigs.targets = BundleConfigs.targets
 		BundleGitInfo.targets = BundleGitInfo.targets
-		BundlePermissions.targets = BundlePermissions.targets
 		BundleLocalizations.targets = BundleLocalizations.targets
+		BundlePermissions.targets = BundlePermissions.targets
 		InsanityBot.targets = InsanityBot.targets
 	EndProjectSection
 EndProject
@@ -50,7 +50,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Permissions", "Permissions"
 		config\permissions\dummy.json = config\permissions\dummy.json
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InsanityBot.Extensions.Localization", "InsanityBot.Extensions.Localization\InsanityBot.Extensions.Localization.csproj", "{7240C568-9F4E-48E4-BA84-0443EBFA1D5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InsanityBot.Extensions.Localization", "InsanityBot.Extensions.Localization\InsanityBot.Extensions.Localization.csproj", "{7240C568-9F4E-48E4-BA84-0443EBFA1D5B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0E58351A-2A17-40CD-A514-904D0A5F2940} = {0E58351A-2A17-40CD-A514-904D0A5F2940}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Localizations", "Localizations", "{C45C3146-C66D-4A1D-9E2D-4DCC780BA72C}"
+	ProjectSection(SolutionItems) = preProject
+		lang\en-us.json = lang\en-us.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

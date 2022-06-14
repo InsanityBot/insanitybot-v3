@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <Import Project="../BundleLocalizations.targets"/>
+    <Import Project="../BundleLocalizations.targets" />
+    <Import Project="../InsanityBot.targets" />
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
@@ -11,6 +12,12 @@
         <None Include="../lang/*-*.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InsanityBot.Extensions.Datafixers\InsanityBot.Extensions.Datafixers.csproj" />
+      <ProjectReference Include="..\InsanityBot.Extensions.Permissions\InsanityBot.Extensions.Permissions.csproj" />
+      <ProjectReference Include="..\InsanityBot.Extensions\InsanityBot.Extensions.csproj" />
     </ItemGroup>
 
 </Project>

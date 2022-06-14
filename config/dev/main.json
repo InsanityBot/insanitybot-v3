@@ -13,6 +13,12 @@
                 "infractions": {
                     "cache_expiration": "00:10:00"
                 }
+            },
+            "localization": {
+                "default_locale": "en-us",
+                "blocked_locales": [
+
+                ]
             }
         }
     }
