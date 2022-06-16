@@ -3,22 +3,24 @@
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
     <ItemGroup>
-        <!-- Stores the invariant, read: fallback localization if no other localization can be determined -->
-        <_InvariantLocalization>en-us</_InvariantLocalization>
         <_LangItems Include="../lang/??-??.json" />
     </ItemGroup>
 
+    <PropertyGroup>
+        <InvariantLocalization>en-us</InvariantLocalization>
+    </PropertyGroup>
+
     <Target Name="BundleLocalizations">
-        <MakeDir Directories="@(OutputPath)/lang" />
-        <Copy SourceFiles="$(_LangItems)"
-              DestinationFolder="@(OutputPath)/lang" />
+        <MakeDir Directories="$(OutputPath)/lang" />
+        <Copy SourceFiles="@(_LangItems)"
+              DestinationFolder="$(OutputPath)/lang" />
     </Target>
 
     <Target Name="RegisterInvariantLocalization">
         <ItemGroup>
             <AssemblyAttributes Include="System.Reflection.AssemblyMetadataAttribute">
                 <_Parameter1>invariant-localization</_Parameter1>
-                <_Parameter2>$(_InvariantLocalization)</_Parameter2>
+                <_Parameter2>$(InvariantLocalization)</_Parameter2>
             </AssemblyAttributes>
         </ItemGroup>
 
@@ -26,8 +28,6 @@
                            Language="C#"
                            OutputDirectory="@(IntermediateOutputPath)"
                            OutputFile="LangAssemblyAttributes.cs">
-            
-            <Output TaskParameter="OutputFile" ItemName="Compile" />
         </WriteCodeFragment>
     </Target>
 </Project>

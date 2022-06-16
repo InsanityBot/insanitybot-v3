@@ -12,6 +12,7 @@
         <None Include="../lang/*-*.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <None Remove="../lang/*.*.json" />
     </ItemGroup>
 
     <ItemGroup>
