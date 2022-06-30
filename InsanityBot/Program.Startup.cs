@@ -17,11 +17,15 @@ using Microsoft.Extensions.Hosting;
 
 using Serilog;
 
+using Starnight.Caching;
 using Starnight.Internal.Rest;
 
 public static partial class Program
 {
-    public static async Task Main(String[] argv)
+    public static async Task Main
+    (
+        String[] argv
+    )
     {
         String gitDesc = Assembly.GetExecutingAssembly().GetCustomAttributes<AssemblyMetadataAttribute>()
             .Where(xm => xm.Key == "git-tree-state")
@@ -47,6 +51,8 @@ public static partial class Program
                 {
                     xm.TrackStatistics = true;
                 });
+
+            services.AddStarnightMemoryCache();
 
             services.AddHttpClient();
             services.AddSingleton<IDatafixerService, DataFixerUpper>();
