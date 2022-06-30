@@ -20,7 +20,12 @@ public class InfractionService
 
     private readonly TimeSpan __cache_expiration;
 
-    public InfractionService(ILogger<InfractionService> logger, IMemoryCache cache, MainConfiguration configuration)
+    public InfractionService
+    (
+        ILogger<InfractionService> logger,
+        IMemoryCache cache,
+        MainConfiguration configuration
+    )
     {
         this.__logger = logger;
         this.__cache = cache;
@@ -29,7 +34,11 @@ public class InfractionService
         this.__cache_expiration = this.__configuration.Value<TimeSpan>("insanitybot.moderation.infractions.cache_expiration");
     }
 
-    public void SetInfractions(Int64 userId, InfractionCollection infractions)
+    public void SetInfractions
+    (
+        Int64 userId,
+        InfractionCollection infractions
+    )
     {
         this.__cache.GetOrCreate(getCacheKey(userId), xm =>
         {
@@ -45,7 +54,11 @@ public class InfractionService
         writer.Close();
     }
 
-    public void SetInfractions(DiscordUser user, InfractionCollection infractions)
+    public void SetInfractions
+    (
+        DiscordUser user,
+        InfractionCollection infractions
+    )
     {
         this.__cache.GetOrCreate(getCacheKey(user.Id), xm =>
         {
@@ -61,7 +74,10 @@ public class InfractionService
         writer.Close();
     }
 
-    public InfractionCollection GetInfractions(Int64 userId)
+    public InfractionCollection GetInfractions
+    (
+        Int64 userId
+    )
     {
         if(!this.__cache.TryGetValue(getCacheKey(userId), out InfractionCollection? infractions) &&
             infractions is not null)
@@ -89,7 +105,10 @@ public class InfractionService
         }
     }
 
-    public InfractionCollection GetInfractions(DiscordUser user)
+    public InfractionCollection GetInfractions
+    (
+        DiscordUser user
+    )
     {
         InfractionCollection collection;
 
@@ -122,7 +141,10 @@ public class InfractionService
         return collection;
     }
 
-    public InfractionCollection CreateInfractions(Int64 userId)
+    public InfractionCollection CreateInfractions
+    (
+        Int64 userId
+    )
     {
         InfractionCollection infractions = new();
 
@@ -151,7 +173,10 @@ public class InfractionService
         return infractions;
     }
 
-    public InfractionCollection CreateInfractions(DiscordUser user)
+    public InfractionCollection CreateInfractions
+    (
+        DiscordUser user
+    )
     {
         InfractionCollection infractions = new()
         {
@@ -184,7 +209,10 @@ public class InfractionService
         return infractions;
     }
 
-    private static String getCacheKey(Int64 userId)
+    private static String getCacheKey
+    (
+        Int64 userId
+    )
     {
         return $"InsanityBot.Extensions.Infractions:{userId}";
     }

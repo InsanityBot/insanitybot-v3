@@ -11,7 +11,11 @@ using Starnight.Internal.Entities.Users;
 
 public partial class UnsafePermissionService
 {
-    public ValueTask GrantPermission(DiscordUser user, String permission)
+    public ValueTask GrantPermission
+    (
+        DiscordUser user,
+        String permission
+    )
     {
         IEnumerable<String> permissions = this.resolveWildcards(permission);
 
@@ -28,7 +32,11 @@ public partial class UnsafePermissionService
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask GrantPermission(DiscordRole role, String permission)
+    public ValueTask GrantPermission
+    (
+        DiscordRole role,
+        String permission
+    )
     {
         IEnumerable<String> permissions = this.resolveWildcards(permission);
 
@@ -45,7 +53,11 @@ public partial class UnsafePermissionService
         return ValueTask.CompletedTask;
     }
 
-    public async ValueTask GrantPermissions(DiscordUser user, IEnumerable<String> permissions)
+    public async ValueTask GrantPermissions
+    (
+        DiscordUser user,
+        IEnumerable<String> permissions
+    )
     {
         foreach(String singlePermission in permissions)
         {
@@ -53,7 +65,11 @@ public partial class UnsafePermissionService
         }
     }
 
-    public async ValueTask GrantPermissions(DiscordRole role, IEnumerable<String> permissions)
+    public async ValueTask GrantPermissions
+    (
+        DiscordRole role,
+        IEnumerable<String> permissions
+    )
     {
         foreach(String singlePermission in permissions)
         {
@@ -61,7 +77,11 @@ public partial class UnsafePermissionService
         }
     }
 
-    public ValueTask RevokePermission(DiscordUser user, String permission)
+    public ValueTask RevokePermission
+    (
+        DiscordUser user,
+        String permission
+    )
     {
         IEnumerable<String> permissions = this.resolveWildcards(permission);
 
@@ -78,7 +98,11 @@ public partial class UnsafePermissionService
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask RevokePermission(DiscordRole role, String permission)
+    public ValueTask RevokePermission
+    (
+        DiscordRole role,
+        String permission
+    )
     {
         IEnumerable<String> permissions = this.resolveWildcards(permission);
 
@@ -95,7 +119,11 @@ public partial class UnsafePermissionService
         return ValueTask.CompletedTask;
     }
 
-    public async ValueTask RevokePermissions(DiscordUser user, IEnumerable<String> permissions)
+    public async ValueTask RevokePermissions
+    (
+        DiscordUser user,
+        IEnumerable<String> permissions
+    )
     {
         foreach(String singlePermission in permissions)
         {
@@ -103,7 +131,11 @@ public partial class UnsafePermissionService
         }
     }
 
-    public async ValueTask RevokePermissions(DiscordRole role, IEnumerable<String> permissions)
+    public async ValueTask RevokePermissions
+    (
+        DiscordRole role,
+        IEnumerable<String> permissions
+    )
     {
         foreach(String singlePermission in permissions)
         {
@@ -111,7 +143,11 @@ public partial class UnsafePermissionService
         }
     }
 
-    public ValueTask UseFallback(DiscordUser user, String permission)
+    public ValueTask UseFallback
+    (
+        DiscordUser user,
+        String permission
+    )
     {
         IEnumerable<String> permissions = this.resolveWildcards(permission);
 
@@ -128,7 +164,11 @@ public partial class UnsafePermissionService
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask UseFallback(DiscordRole role, String permission)
+    public ValueTask UseFallback
+    (
+        DiscordRole role,
+        String permission
+    )
     {
         IEnumerable<String> permissions = this.resolveWildcards(permission);
 
@@ -145,7 +185,11 @@ public partial class UnsafePermissionService
         return ValueTask.CompletedTask;
     }
 
-    public async ValueTask UseFallbacks(DiscordUser user, IEnumerable<String> permissions)
+    public async ValueTask UseFallbacks
+    (
+        DiscordUser user,
+        IEnumerable<String> permissions
+    )
     {
         foreach(String singlePermission in permissions)
         {
@@ -153,7 +197,11 @@ public partial class UnsafePermissionService
         }
     }
 
-    public async ValueTask UseFallbacks(DiscordRole role, IEnumerable<String> permissions)
+    public async ValueTask UseFallbacks
+    (
+        DiscordRole role,
+        IEnumerable<String> permissions
+    )
     {
         foreach(String singlePermission in permissions)
         {
@@ -161,7 +209,11 @@ public partial class UnsafePermissionService
         }
     }
 
-    public ValueTask SetAdministrator(DiscordUser user, Boolean administrator)
+    public ValueTask SetAdministrator
+    (
+        DiscordUser user,
+        Boolean administrator
+    )
     {
         UserPermissions userPermissions = this.__user_service.GetUserPermissions(user.Id)
             ?? this.__user_service.CreateUserPermissions(user.Id);
@@ -171,7 +223,11 @@ public partial class UnsafePermissionService
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask SetAdministrator(DiscordRole role, Boolean administrator)
+    public ValueTask SetAdministrator
+    (
+        DiscordRole role,
+        Boolean administrator
+    )
     {
         RolePermissions rolePermissions = this.__role_service.GetRolePermissions(role.Id)
             ?? this.__role_service.CreateRolePermissions(role.Id);

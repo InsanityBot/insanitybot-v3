@@ -85,65 +85,95 @@ public class PermissionService : IPermissionService
             ?? this.__default_permission_service.CreateDefaultPermissions(this.__manifest));
     }
 
-    public ValueTask<RolePermissions> GetRolePermissions(DiscordRole role)
+    public ValueTask<RolePermissions> GetRolePermissions
+    (
+        DiscordRole role
+    )
     {
         return ValueTask.FromResult(
                 this.__role_permission_service.GetRolePermissions(role.Id)
                 ?? this.__role_permission_service.CreateRolePermissions(role.Id));
     }
 
-    public ValueTask<UserPermissions> GetUserPermissions(DiscordUser user)
+    public ValueTask<UserPermissions> GetUserPermissions
+    (
+        DiscordUser user
+    )
     {
         return ValueTask.FromResult(
                 this.__user_permission_service.GetUserPermissions(user.Id)
                 ?? this.__user_permission_service.CreateUserPermissions(user.Id));
     }
 
-    public ValueTask SetDefaultPermissions(DefaultPermissions defaultPermissions)
+    public ValueTask SetDefaultPermissions
+    (
+        DefaultPermissions defaultPermissions
+    )
     {
         this.__default_permission_service.WriteDefaultPermissions(defaultPermissions);
 
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask SetRolePermissions(RolePermissions rolePermissions)
+    public ValueTask SetRolePermissions
+    (
+        RolePermissions rolePermissions
+    )
     {
         this.__role_permission_service.WriteRolePermissions(rolePermissions);
 
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask SetUserPermissions(UserPermissions userPermissions)
+    public ValueTask SetUserPermissions
+    (
+        UserPermissions userPermissions
+    )
     {
         this.__user_permission_service.WriteUserPermissions(userPermissions);
 
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask CreateRolePermissions(DiscordRole role)
+    public ValueTask CreateRolePermissions
+    (
+        DiscordRole role
+    )
     {
         this.__role_permission_service.CreateRolePermissions(role.Id);
 
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask CreateRolePermissions(RolePermissions permissions)
+    public ValueTask CreateRolePermissions
+    (
+        RolePermissions permissions
+    )
         => this.SetRolePermissions(permissions);
 
-    public ValueTask CreateUserPermissions(DiscordUser user)
+    public ValueTask CreateUserPermissions
+    (
+        DiscordUser user
+    )
     {
         this.__user_permission_service.CreateUserPermissions(user.Id);
 
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask CreateUserPermissions(UserPermissions permissions)
+    public ValueTask CreateUserPermissions
+    (
+        UserPermissions permissions
+    )
         => this.SetUserPermissions(permissions);
 
 
     // ---- higher-level capability ---- //
 
-    public ValueTask RemapPermissions(IEnumerable<DiscordRole> roles)
+    public ValueTask RemapPermissions
+    (
+        IEnumerable<DiscordRole> roles
+    )
     {
         foreach(DiscordRole role in roles)
         {
@@ -170,14 +200,21 @@ public class PermissionService : IPermissionService
         return ValueTask.CompletedTask;
     }
 
-    public async ValueTask RemapPermissions(DiscordGuild guild)
+    public async ValueTask RemapPermissions
+    (
+        DiscordGuild guild
+    )
     { 
         IEnumerable<DiscordRole> roles = await this.__guild_resource.GetRolesAsync(guild.Id);
 
         await this.RemapPermissions(roles);
     }
 
-    public async ValueTask<Boolean> CheckPermission(DiscordUser user, String permission)
+    public async ValueTask<Boolean> CheckPermission
+    (
+        DiscordUser user,
+        String permission
+    )
     {
         IEnumerable<String> resolved = this.resolveWildcards(permission);
 
@@ -200,7 +237,11 @@ public class PermissionService : IPermissionService
         };
     }
 
-    public async ValueTask<Boolean> CheckPermission(DiscordRole role, String permission)
+    public async ValueTask<Boolean> CheckPermission
+    (
+        DiscordRole role,
+        String permission
+    )
     {
         IEnumerable<String> resolved = this.resolveWildcards(permission);
 
@@ -223,7 +264,11 @@ public class PermissionService : IPermissionService
         };
     }
 
-    public ValueTask<Boolean> CheckPermission(DiscordGuildMember member, String permission)
+    public ValueTask<Boolean> CheckPermission
+    (
+        DiscordGuildMember member,
+        String permission
+    )
     {
         IEnumerable<String> resolved = this.resolveWildcards(permission);
 
@@ -239,7 +284,11 @@ public class PermissionService : IPermissionService
         });
     }
 
-    public async ValueTask<Boolean> CheckAnyPermission(DiscordUser user, IEnumerable<String> permissions)
+    public async ValueTask<Boolean> CheckAnyPermission
+    (
+        DiscordUser user,
+        IEnumerable<String> permissions
+    )
     {
         if(await this.CheckAdministrator(user))
         {
@@ -257,7 +306,11 @@ public class PermissionService : IPermissionService
         return false;
     }
 
-    public async ValueTask<Boolean> CheckAnyPermission(DiscordRole role, IEnumerable<String> permissions)
+    public async ValueTask<Boolean> CheckAnyPermission
+    (
+        DiscordRole role,
+        IEnumerable<String> permissions
+    )
     {
         if(await this.CheckAdministrator(role))
         {
@@ -275,7 +328,11 @@ public class PermissionService : IPermissionService
         return false;
     }
 
-    public async ValueTask<Boolean> CheckAnyPermission(DiscordGuildMember member, IEnumerable<String> permissions)
+    public async ValueTask<Boolean> CheckAnyPermission
+    (
+        DiscordGuildMember member,
+        IEnumerable<String> permissions
+    )
     {
         if(await this.CheckAdministrator(member.User!))
         {
@@ -293,7 +350,11 @@ public class PermissionService : IPermissionService
         return false;
     }
 
-    public async ValueTask<Boolean> CheckAllPermissions(DiscordUser user, IEnumerable<String> permissions)
+    public async ValueTask<Boolean> CheckAllPermissions
+    (
+        DiscordUser user,
+        IEnumerable<String> permissions
+    )
     {
         if(await this.CheckAdministrator(user))
         {
@@ -311,7 +372,11 @@ public class PermissionService : IPermissionService
         return true;
     }
 
-    public async ValueTask<Boolean> CheckAllPermissions(DiscordRole role, IEnumerable<String> permissions)
+    public async ValueTask<Boolean> CheckAllPermissions
+    (
+        DiscordRole role,
+        IEnumerable<String> permissions
+    )
     {
         if(await this.CheckAdministrator(role))
         {
@@ -329,7 +394,11 @@ public class PermissionService : IPermissionService
         return true;
     }
 
-    public async ValueTask<Boolean> CheckAllPermissions(DiscordGuildMember member, IEnumerable<String> permissions)
+    public async ValueTask<Boolean> CheckAllPermissions
+    (
+        DiscordGuildMember member,
+        IEnumerable<String> permissions
+    )
     {
         if(await this.CheckAdministrator(member.User!))
         {
@@ -347,19 +416,29 @@ public class PermissionService : IPermissionService
         return true;
     }
 
-    public async ValueTask<Boolean> CheckAdministrator(DiscordUser user)
+    public async ValueTask<Boolean> CheckAdministrator
+    (
+        DiscordUser user
+    )
     {
         UserPermissions permissions = await this.GetUserPermissions(user);
         return permissions.IsAdministrator;
     }
 
-    public async ValueTask<Boolean> CheckAdministrator(DiscordRole role)
+    public async ValueTask<Boolean> CheckAdministrator
+    (
+        DiscordRole role
+    )
     {
         RolePermissions permissions = await this.GetRolePermissions(role);
         return permissions.IsAdministrator;
     }
 
-    public async ValueTask GrantPermission(DiscordUser user, String permission)
+    public async ValueTask GrantPermission
+    (
+        DiscordUser user,
+        String permission
+    )
     {
         UserPermissions permissions = await this.GetUserPermissions(user);
 
@@ -371,7 +450,11 @@ public class PermissionService : IPermissionService
         await this.SetUserPermissions(permissions);
     }
 
-    public async ValueTask GrantPermission(DiscordRole role, String permission)
+    public async ValueTask GrantPermission
+    (
+        DiscordRole role,
+        String permission
+    )
     {
         RolePermissions permissions = await this.GetRolePermissions(role);
 
@@ -383,7 +466,11 @@ public class PermissionService : IPermissionService
         await this.SetRolePermissions(permissions);
     }
 
-    public async ValueTask GrantPermissions(DiscordUser user, IEnumerable<String> permissions)
+    public async ValueTask GrantPermissions
+    (
+        DiscordUser user,
+        IEnumerable<String> permissions
+    )
     {
         UserPermissions perm = await this.GetUserPermissions(user);
 
@@ -399,7 +486,11 @@ public class PermissionService : IPermissionService
         await this.SetUserPermissions(perm);
     }
 
-    public async ValueTask GrantPermissions(DiscordRole role, IEnumerable<String> permissions)
+    public async ValueTask GrantPermissions
+    (
+        DiscordRole role,
+        IEnumerable<String> permissions
+    )
     {
         RolePermissions perm = await this.GetRolePermissions(role);
 
@@ -415,7 +506,11 @@ public class PermissionService : IPermissionService
         await this.SetRolePermissions(perm);
     }
 
-    public async ValueTask RevokePermission(DiscordUser user, String permission)
+    public async ValueTask RevokePermission
+    (
+        DiscordUser user,
+        String permission
+    )
     {
         UserPermissions permissions = await this.GetUserPermissions(user);
 
@@ -427,7 +522,11 @@ public class PermissionService : IPermissionService
         await this.SetUserPermissions(permissions);
     }
 
-    public async ValueTask RevokePermission(DiscordRole role, String permission)
+    public async ValueTask RevokePermission
+    (
+        DiscordRole role,
+        String permission
+    )
     {
         RolePermissions permissions = await this.GetRolePermissions(role);
 
@@ -439,7 +538,11 @@ public class PermissionService : IPermissionService
         await this.SetRolePermissions(permissions);
     }
 
-    public async ValueTask RevokePermissions(DiscordUser user, IEnumerable<String> permissions)
+    public async ValueTask RevokePermissions
+    (
+        DiscordUser user,
+        IEnumerable<String> permissions
+    )
     {
         UserPermissions perm = await this.GetUserPermissions(user);
 
@@ -455,7 +558,11 @@ public class PermissionService : IPermissionService
         await this.SetUserPermissions(perm);
     }
 
-    public async ValueTask RevokePermissions(DiscordRole role, IEnumerable<String> permissions)
+    public async ValueTask RevokePermissions
+    (
+        DiscordRole role,
+        IEnumerable<String> permissions
+    )
     {
         RolePermissions perm = await this.GetRolePermissions(role);
 
@@ -471,7 +578,11 @@ public class PermissionService : IPermissionService
         await this.SetRolePermissions(perm);
     }
 
-    public async ValueTask UseFallback(DiscordUser user, String permission)
+    public async ValueTask UseFallback
+    (
+        DiscordUser user,
+        String permission
+    )
     {
         UserPermissions permissions = await this.GetUserPermissions(user);
 
@@ -483,7 +594,11 @@ public class PermissionService : IPermissionService
         await this.SetUserPermissions(permissions);
     }
 
-    public async ValueTask UseFallback(DiscordRole role, String permission)
+    public async ValueTask UseFallback
+    (
+        DiscordRole role,
+        String permission
+    )
     {
         RolePermissions permissions = await this.GetRolePermissions(role);
 
@@ -495,7 +610,11 @@ public class PermissionService : IPermissionService
         await this.SetRolePermissions(permissions);
     }
 
-    public async ValueTask UseFallbacks(DiscordUser user, IEnumerable<String> permissions)
+    public async ValueTask UseFallbacks
+    (
+        DiscordUser user,
+        IEnumerable<String> permissions
+    )
     {
         UserPermissions perm = await this.GetUserPermissions(user);
 
@@ -511,7 +630,11 @@ public class PermissionService : IPermissionService
         await this.SetUserPermissions(perm);
     }
 
-    public async ValueTask UseFallbacks(DiscordRole role, IEnumerable<String> permissions)
+    public async ValueTask UseFallbacks
+    (
+        DiscordRole role,
+        IEnumerable<String> permissions
+    )
     {
         RolePermissions perm = await this.GetRolePermissions(role);
 
@@ -527,54 +650,84 @@ public class PermissionService : IPermissionService
         await this.SetRolePermissions(perm);
     }
 
-    public async ValueTask SetAdministrator(DiscordUser user, Boolean administrator)
+    public async ValueTask SetAdministrator
+    (
+        DiscordUser user,
+        Boolean administrator
+    )
     {
         UserPermissions permissions = await this.GetUserPermissions(user);
         permissions.IsAdministrator = administrator;
         await this.SetUserPermissions(permissions);
     }
 
-    public async ValueTask SetAdministrator(DiscordRole role, Boolean administrator)
+    public async ValueTask SetAdministrator
+    (
+        DiscordRole role,
+        Boolean administrator
+    )
     {
         RolePermissions permissions = await this.GetRolePermissions(role);
         permissions.IsAdministrator = administrator;
         await this.SetRolePermissions(permissions);
     }
 
-    public async ValueTask SetParent(DiscordUser user, Int64 parent)
+    public async ValueTask SetParent
+    (
+        DiscordUser user,
+        Int64 parent
+    )
     {
         UserPermissions permissions = await this.GetUserPermissions(user);
         permissions.AssignedRoles = permissions.AssignedRoles.Append(parent).ToArray();
         await this.SetUserPermissions(permissions);
     }
 
-    public async ValueTask SetParent(DiscordRole role, Int64 parent)
+    public async ValueTask SetParent
+    (
+        DiscordRole role,
+        Int64 parent
+    )
     {
         RolePermissions permissions = await this.GetRolePermissions(role);
         permissions.Parents = permissions.Parents.Append(parent).ToArray();
         await this.SetRolePermissions(permissions);
     }
 
-    public async ValueTask SetParents(DiscordUser user, IEnumerable<Int64> parent)
+    public async ValueTask SetParents
+    (
+        DiscordUser user,
+        IEnumerable<Int64> parent
+    )
     {
         UserPermissions permissions = await this.GetUserPermissions(user);
         permissions.AssignedRoles = permissions.AssignedRoles.Concat(parent).ToArray();
         await this.SetUserPermissions(permissions);
     }
 
-    public async ValueTask SetParents(DiscordRole role, IEnumerable<Int64> parent)
+    public async ValueTask SetParents
+    (
+        DiscordRole role,
+        IEnumerable<Int64> parent
+    )
     {
         RolePermissions permissions = await this.GetRolePermissions(role);
         permissions.Parents = permissions.Parents.Concat(parent).ToArray();
         await this.SetRolePermissions(permissions);
     }
 
-    public async ValueTask RestoreDefaults(DiscordUser user)
+    public async ValueTask RestoreDefaults
+    (
+        DiscordUser user
+    )
     {
         await this.SetUserPermissions(this.__user_permission_service.CreateUserPermissions(user.Id));
     }
 
-    public async ValueTask RestoreDefaults(DiscordRole role)
+    public async ValueTask RestoreDefaults
+    (
+        DiscordRole role
+    )
     {
         await this.SetRolePermissions(this.__role_permission_service.CreateRolePermissions(role.Id));
     }
@@ -684,7 +837,11 @@ public class PermissionService : IPermissionService
         return mapping;
     }
 
-    private async void fetchFileFromSourceTree(String treeLink, String filename)
+    private async void fetchFileFromSourceTree
+    (
+        String treeLink,
+        String filename
+    )
     {
         String commitHash = Assembly.GetExecutingAssembly()
             .GetCustomAttributes<AssemblyMetadataAttribute>()
@@ -716,7 +873,10 @@ public class PermissionService : IPermissionService
 
     #region internals - wildcard handling
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    private IEnumerable<String> resolveWildcards(String source)
+    private IEnumerable<String> resolveWildcards
+    (
+        String source
+    )
     {
         // you have to contain at least one wildcard for us to filter wildcards
         if(!source.AsSpan().Contains('*'))
@@ -732,7 +892,11 @@ public class PermissionService : IPermissionService
     #endregion
 
     #region internals - permission checks
-    private Boolean checkSinglePermission(UserPermissions permissions, String permission)
+    private Boolean checkSinglePermission
+    (
+        UserPermissions permissions,
+        String permission
+    )
     {
         PermissionValue immediateValue = permissions.Permissions[permission];
 
@@ -787,7 +951,11 @@ public class PermissionService : IPermissionService
         };
     }
 
-    private Boolean checkSinglePermission(RolePermissions permissions, String permission)
+    private Boolean checkSinglePermission
+    (
+        RolePermissions permissions,
+        String permission
+    )
     {
         PermissionValue immediateValue = permissions.Permissions[permission];
 
@@ -842,7 +1010,11 @@ public class PermissionService : IPermissionService
         };
     }
 
-    private Boolean checkSinglePermission(DiscordGuildMember member, String permission)
+    private Boolean checkSinglePermission
+    (
+        DiscordGuildMember member,
+        String permission
+    )
     {
         UserPermissions permissions = this.__user_permission_service.GetUserPermissions(member.User!.Id)
             ?? this.__user_permission_service.CreateUserPermissions(member.User!.Id);

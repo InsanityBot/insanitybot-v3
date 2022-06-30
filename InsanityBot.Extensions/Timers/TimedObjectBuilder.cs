@@ -17,7 +17,10 @@ public class TimedObjectBuilder
         this.__expiry = DateTimeOffset.UtcNow;
     }
 
-    public TimedObjectBuilder(TimedObject timer)
+    public TimedObjectBuilder
+    (
+        TimedObject timer
+    )
     {
         this.__data_version = timer.DataVersion;
         this.__expiry = timer.Expiry;
@@ -25,7 +28,10 @@ public class TimedObjectBuilder
         this.__guid = timer.Guid;
     }
 
-    public TimedObjectBuilder(TimedObjectBuilder builder)
+    public TimedObjectBuilder
+    (
+        TimedObjectBuilder builder
+    )
     {
         this.__data_version = builder.__data_version;
         this.__expiry = builder.__expiry;
@@ -33,32 +39,47 @@ public class TimedObjectBuilder
         this.__guid = builder.__guid;
     }
 
-    public TimedObjectBuilder WithDataVersion(String dataVersion)
+    public TimedObjectBuilder WithDataVersion
+    (
+        String dataVersion
+    )
     {
         this.__data_version = dataVersion;
         return this;
     }
 
-    public TimedObjectBuilder WithExpiry(DateTimeOffset expiry)
+    public TimedObjectBuilder WithExpiry
+    (
+        DateTimeOffset expiry
+    )
     {
         this.__expiry = expiry;
         return this;
     }
 
-    public TimedObjectBuilder WithAdditionalData(String additionalData)
+    public TimedObjectBuilder WithAdditionalData
+    (
+        String additionalData
+    )
     {
         this.__additional_data = additionalData;
         return this;
     }
 
-    public TimedObjectBuilder WithAdditionalData(Object additionalData)
+    public TimedObjectBuilder WithAdditionalData
+    (
+        Object additionalData
+    )
     {
         // escape json
         this.__additional_data = JsonSerializer.Serialize(additionalData).Replace("\"", "\\\"");
         return this;
     }
 
-    public TimedObjectBuilder WithGuid(Guid guid)
+    public TimedObjectBuilder WithGuid
+    (
+        Guid guid
+    )
     {
         this.__guid = guid;
         return this;

@@ -38,7 +38,11 @@ public class UserPermissionService
             "insanitybot.permissions.users.cache_expiration")!);
     }
 
-    public UserPermissions? GetUserPermissions(Int64 id, Boolean bypassCache = false)
+    public UserPermissions? GetUserPermissions
+    (
+        Int64 id,
+        Boolean bypassCache = false
+    )
     {
         if(!bypassCache && this.__cache.TryGetValue(CacheKeyHelper.GetUserPermissionKey(id), out UserPermissions? permissions))
         {
@@ -85,7 +89,12 @@ public class UserPermissionService
         }
     }
 
-    public Boolean VerifyUserPermissionExistence(Int64 id, Boolean verifyValidity = false, Boolean cacheIfValid = false)
+    public Boolean VerifyUserPermissionExistence
+    (
+        Int64 id,
+        Boolean verifyValidity = false,
+        Boolean cacheIfValid = false
+    )
     {
         if(!File.Exists($"./data/user-{id}/permissions.json"))
         {
@@ -126,7 +135,10 @@ public class UserPermissionService
         }
     }
 
-    public void WriteUserPermissions(UserPermissions permissions)
+    public void WriteUserPermissions
+    (
+        UserPermissions permissions
+    )
     {
         StreamWriter writer;
 
@@ -157,7 +169,10 @@ public class UserPermissionService
             permissions.SnowflakeIdentifier);
     }
 
-    public UserPermissions CreateUserPermissions(Int64 snowflake)
+    public UserPermissions CreateUserPermissions
+    (
+        Int64 snowflake
+    )
     {
 
         // only called after we ensured defaults were present
@@ -176,7 +191,10 @@ public class UserPermissionService
         return permissions;
     }
 
-    private UserPermissions updatePermissions(UserPermissions permissions)
+    private UserPermissions updatePermissions
+    (
+        UserPermissions permissions
+    )
     {
         DefaultPermissions defaultPermissions = this.__defaults.GetDefaultPermissions()!;
 

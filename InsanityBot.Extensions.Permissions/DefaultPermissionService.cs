@@ -36,7 +36,10 @@ public class DefaultPermissionService
         this.loadAndCachePermissions();
     }
 
-    public DefaultPermissions? GetDefaultPermissions(Boolean bypassCache = false)
+    public DefaultPermissions? GetDefaultPermissions
+    (
+        Boolean bypassCache = false
+    )
     {
         if(!bypassCache && this.__cache.TryGetValue(
             CacheKeyHelper.GetDefaultPermissionKey(),
@@ -48,7 +51,10 @@ public class DefaultPermissionService
         return loadAndCachePermissions();
     }
 
-    public void WriteDefaultPermissions(DefaultPermissions permissions)
+    public void WriteDefaultPermissions
+    (
+        DefaultPermissions permissions
+    )
     {
         StreamWriter writer;
 
@@ -76,7 +82,10 @@ public class DefaultPermissionService
         this.__logger?.LogDebug(LoggerEventIds.DefaultPermissionEdited, "Edited default permissions");
     }
 
-    public DefaultPermissions CreateDefaultPermissions(PermissionManifest manifest)
+    public DefaultPermissions CreateDefaultPermissions
+    (
+        PermissionManifest manifest
+    )
     {
         DefaultPermissions permissions = new();
 
@@ -98,7 +107,10 @@ public class DefaultPermissionService
         return permissions;
     }
 
-    public DefaultPermissions UpdateDefaultPermissions(PermissionManifest manifest)
+    public DefaultPermissions UpdateDefaultPermissions
+    (
+        PermissionManifest manifest
+    )
     {
         DefaultPermissions permissions = this.GetDefaultPermissions()!;
 

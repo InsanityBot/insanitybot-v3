@@ -5,12 +5,18 @@ using System.Text.Json;
 
 public static class TimedObjectExtensions
 {
-    public static String? GetOriginalJsonString(this TimedObject timer)
+    public static String? GetOriginalJsonString
+    (
+        this TimedObject timer
+    )
     {
         return timer.AdditionalData?.Replace("\\\"", "\"");
     }
 
-    public static T? GetOriginalDataObject<T>(this TimedObject timer)
+    public static T? GetOriginalDataObject<T>
+    (
+        this TimedObject timer
+    )
     {
         String unescaped = GetOriginalJsonString(timer)!;
 

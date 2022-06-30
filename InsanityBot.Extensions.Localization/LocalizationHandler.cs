@@ -12,7 +12,10 @@ public class LocalizationHandler
 {
     private readonly Localization __localization;
 
-    public LocalizationHandler(String locale)
+    public LocalizationHandler
+    (
+        String locale
+    )
     {
         String invariantLocale = Assembly.GetExecutingAssembly().GetCustomAttributes<AssemblyMetadataAttribute>()
             .Where(xm => xm.Key == "invariant-localization")
@@ -39,7 +42,10 @@ public class LocalizationHandler
         this.__localization.DataVersion = path.Evaluate(document.RootElement).Matches![0].Value.GetString()!;
     }
 
-    public String GetLocalizedString(String component)
+    public String GetLocalizedString
+    (
+        String component
+    )
     {
         JsonPath path = component.StartsWith("$.")
             ? JsonPath.Parse(component)

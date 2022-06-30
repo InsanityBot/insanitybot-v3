@@ -11,7 +11,12 @@ using Spectre.Console.Extensions.Progress;
 
 internal static class ConfigurationDownloader
 {
-    public static async Task<JsonDocument> DownloadConfiguration(String commitHash, String name, HttpClient client)
+    public static async Task<JsonDocument> DownloadConfiguration
+    (
+        String commitHash,
+        String name,
+        HttpClient client
+    )
     {
         String url = $"https://raw.githubusercontent.com/insanitybot/insanitybot-v3/{commitHash}/config/release/{name}.json";
         MemoryStream intermediate = new();

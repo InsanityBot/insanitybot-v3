@@ -22,13 +22,20 @@ public class DataFixerUpper : IDatafixerService
     private readonly ILogger<IDatafixerService> __logger;
     private readonly ConcurrentDictionary<Type, ConcurrentBag<IDatafixer>> __sorted_datafixers;
 
-    public DataFixerUpper(ILogger<IDatafixerService> logger)
+    public DataFixerUpper
+    (
+        ILogger<IDatafixerService> logger
+    )
     {
         this.__logger = logger;
         this.__sorted_datafixers = new();
     }
 
-    public ValueTask DiscoverDatafixers(IServiceProvider services, params Assembly[] assemblies)
+    public ValueTask DiscoverDatafixers
+    (
+        IServiceProvider services,
+        params Assembly[] assemblies
+    )
     {
         this.__logger.LogInformation("Initializing DataFixerUpper");
 
@@ -187,7 +194,10 @@ public class DataFixerUpper : IDatafixerService
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Object createInstance(Type type)
+    private static Object createInstance
+    (
+        Type type
+    )
     {
         ConstructorInfo ctor = type.GetConstructor(Type.EmptyTypes)!;
 
@@ -195,12 +205,19 @@ public class DataFixerUpper : IDatafixerService
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Object createComplexInstance(Type type, IServiceProvider services)
+    private static Object createComplexInstance
+    (
+        Type type,
+        IServiceProvider services
+    )
     {
         return ActivatorUtilities.CreateInstance(services, type);
     }
 
-    public Boolean ApplyDatafixers<Datafixable>(Datafixable datafixable)
+    public Boolean ApplyDatafixers<Datafixable>
+    (
+        Datafixable datafixable
+    )
         where Datafixable : class, IDatafixable
     {
         this.__logger.LogDebug("Starting datafixer operation for {datafixableType}", typeof(Datafixable));

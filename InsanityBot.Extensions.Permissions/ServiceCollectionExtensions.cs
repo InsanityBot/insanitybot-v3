@@ -6,7 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddPermissionServices(this IServiceCollection services, PermissionServiceType type)
+    public static IServiceCollection AddPermissionServices
+    (
+        this IServiceCollection services,
+        PermissionServiceType type
+    )
     {
         services.AddSingleton<DefaultPermissionService>()
             .AddSingleton<RolePermissionService>()

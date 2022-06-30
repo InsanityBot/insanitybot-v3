@@ -46,7 +46,11 @@ public class RolePermissionService
 
     }
 
-    public RolePermissions? GetRolePermissions(Int64 id, Boolean bypassCache = false)
+    public RolePermissions? GetRolePermissions
+    (
+        Int64 id,
+        Boolean bypassCache = false
+    )
     {
         if(!bypassCache && this.__cache.TryGetValue(CacheKeyHelper.GetRolePermissionKey(id), out RolePermissions? permissions))
         {
@@ -93,7 +97,12 @@ public class RolePermissionService
         }
     }
 
-    public Boolean VerifyRolePermissionExistence(Int64 id, Boolean verifyValidity = false, Boolean cacheIfValid = false)
+    public Boolean VerifyRolePermissionExistence
+    (
+        Int64 id,
+        Boolean verifyValidity = false,
+        Boolean cacheIfValid = false
+    )
     {
         if(!File.Exists($"./data/permissions/{id}.json"))
         {
@@ -136,7 +145,10 @@ public class RolePermissionService
         }
     }
 
-    public void WriteRolePermissions(RolePermissions permissions)
+    public void WriteRolePermissions
+    (
+        RolePermissions permissions
+    )
     {
         StreamWriter writer;
 
@@ -167,7 +179,10 @@ public class RolePermissionService
             permissions.SnowflakeIdentifier);
     }
 
-    public RolePermissions CreateRolePermissions(Int64 snowflake)
+    public RolePermissions CreateRolePermissions
+    (
+        Int64 snowflake
+    )
     {
         // only called after we ensured defaults were present
         DefaultPermissions defaultPermissions = this.__defaults.GetDefaultPermissions()!;
@@ -185,7 +200,10 @@ public class RolePermissionService
         return permissions;
     }
 
-    private RolePermissions updatePermissions(RolePermissions permissions)
+    private RolePermissions updatePermissions
+    (
+        RolePermissions permissions
+    )
     {
         DefaultPermissions defaultPermissions = this.__defaults.GetDefaultPermissions()!;
 

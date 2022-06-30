@@ -13,7 +13,11 @@ using Starnight.Internal.Entities.Users;
 
 public partial class UnsafePermissionService
 {
-    public ValueTask SetParent(DiscordUser user, Int64 parent)
+    public ValueTask SetParent
+    (
+        DiscordUser user,
+        Int64 parent
+    )
     {
         UserPermissions userPermissions = this.__user_service.GetUserPermissions(user.Id)
             ?? this.__user_service.CreateUserPermissions(user.Id);
@@ -26,7 +30,11 @@ public partial class UnsafePermissionService
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask SetParent(DiscordRole role, Int64 parent)
+    public ValueTask SetParent
+    (
+        DiscordRole role,
+        Int64 parent
+    )
     {
         RolePermissions rolePermissions = this.__role_service.GetRolePermissions(role.Id)
             ?? this.__role_service.CreateRolePermissions(role.Id);
@@ -41,7 +49,11 @@ public partial class UnsafePermissionService
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask SetParents(DiscordUser user, IEnumerable<Int64> parents)
+    public ValueTask SetParents
+    (
+        DiscordUser user,
+        IEnumerable<Int64> parents
+    )
     {
         UserPermissions userPermissions = this.__user_service.GetUserPermissions(user.Id)
             ?? this.__user_service.CreateUserPermissions(user.Id);
@@ -54,7 +66,11 @@ public partial class UnsafePermissionService
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask SetParents(DiscordRole role, IEnumerable<Int64> parents)
+    public ValueTask SetParents
+    (
+        DiscordRole role,
+        IEnumerable<Int64> parents
+    )
     {
         RolePermissions rolePermissions = this.__role_service.GetRolePermissions(role.Id)
             ?? this.__role_service.CreateRolePermissions(role.Id);
@@ -69,7 +85,10 @@ public partial class UnsafePermissionService
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask RestoreDefaults(DiscordUser user)
+    public ValueTask RestoreDefaults
+    (
+        DiscordUser user
+    )
     {
         UserPermissions userPermissions = this.__user_service.CreateUserPermissions(user.Id);
         this.__user_service.WriteUserPermissions(userPermissions);
@@ -77,7 +96,10 @@ public partial class UnsafePermissionService
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask RestoreDefaults(DiscordRole role)
+    public ValueTask RestoreDefaults
+    (
+        DiscordRole role
+    )
     {
         RolePermissions rolePermissions = this.__role_service.CreateRolePermissions(role.Id);
         this.__role_service.WriteRolePermissions(rolePermissions);

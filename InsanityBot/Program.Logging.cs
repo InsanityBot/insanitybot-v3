@@ -22,7 +22,10 @@ public static partial class Program
         "[{@l}] " +
         "[{Coalesce(SourceContext, '<none>')}]: {@m}\n{@x}";
 
-    private static IHostBuilder addInsanityBotLogging(this IHostBuilder host)
+    private static IHostBuilder addInsanityBotLogging
+    (
+        this IHostBuilder host
+    )
     {
         host.ConfigureServices((context, services) =>
         {

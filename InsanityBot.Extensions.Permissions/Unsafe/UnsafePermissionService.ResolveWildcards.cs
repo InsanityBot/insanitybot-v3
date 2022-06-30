@@ -36,7 +36,10 @@ using System.Runtime.CompilerServices;
 public partial class UnsafePermissionService
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    private IEnumerable<String> resolveWildcards(String input)
+    private IEnumerable<String> resolveWildcards
+    (
+        String input
+    )
     {
         ReadOnlySpan<Char> expression = input.AsSpan();
         Int32 firstWildcardIndex = expression.IndexOfAny(__wildcards.Span);
@@ -59,7 +62,11 @@ public partial class UnsafePermissionService
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    private Boolean matchWildcards(ReadOnlySpan<Char> expression, ReadOnlySpan<Char> permission)
+    private Boolean matchWildcards
+    (
+        ReadOnlySpan<Char> expression,
+        ReadOnlySpan<Char> permission
+    )
     {
         // if nothing is specified, return true.
         if(expression.Length == 0)

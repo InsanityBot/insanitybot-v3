@@ -13,7 +13,10 @@ using Starnight.Internal.Entities.Users;
 
 public partial class UnsafePermissionService
 {
-    public ValueTask<Boolean> CheckPermission(DiscordUser user, String permission)
+    public ValueTask<Boolean> CheckPermission
+    (
+        DiscordUser user, String permission
+    )
     {
         UserPermissions userPermissions = this.__user_service.GetUserPermissions(user.Id)
             ?? this.__user_service.CreateUserPermissions(user.Id);
@@ -75,7 +78,11 @@ public partial class UnsafePermissionService
         return ValueTask.FromResult(false);
     }
 
-    public ValueTask<Boolean> CheckPermission(DiscordRole role, String permission)
+    public ValueTask<Boolean> CheckPermission
+    (
+        DiscordRole role,
+        String permission
+    )
     {
         RolePermissions primaryRolePermissions = this.__role_service.GetRolePermissions(role.Id)
             ?? this.__role_service.CreateRolePermissions(role.Id);
@@ -118,7 +125,11 @@ public partial class UnsafePermissionService
         return ValueTask.FromResult(false);
     }
 
-    public ValueTask<Boolean> CheckPermission(DiscordGuildMember member, String permission)
+    public ValueTask<Boolean> CheckPermission
+    (
+        DiscordGuildMember member,
+        String permission
+    )
     {
         UserPermissions userPermissions = this.__user_service.GetUserPermissions(member.User!.Id)
             ?? this.__user_service.CreateUserPermissions(member.User!.Id);
@@ -184,7 +195,10 @@ public partial class UnsafePermissionService
         return ValueTask.FromResult(false);
     }
 
-    public ValueTask<Boolean> CheckAdministrator(DiscordUser user)
+    public ValueTask<Boolean> CheckAdministrator
+    (
+        DiscordUser user
+    )
     {
         UserPermissions userPermissions = this.__user_service.GetUserPermissions(user.Id)
             ?? this.__user_service.CreateUserPermissions(user.Id);
@@ -232,7 +246,10 @@ public partial class UnsafePermissionService
         return ValueTask.FromResult(false);
     }
 
-    public ValueTask<Boolean> CheckAdministrator(DiscordRole role)
+    public ValueTask<Boolean> CheckAdministrator
+    (
+        DiscordRole role
+    )
     {
         RolePermissions primaryRolePermissions = this.__role_service.GetRolePermissions(role.Id)
              ?? this.__role_service.CreateRolePermissions(role.Id);
@@ -265,7 +282,10 @@ public partial class UnsafePermissionService
         return ValueTask.FromResult(false);
     }
 
-    private Int64[] buildRoleTree(Int64 role)
+    private Int64[] buildRoleTree
+    (
+        Int64 role
+    )
     {
         RolePermissions initial = this.__role_service.GetRolePermissions(role)
             ?? this.__role_service.CreateRolePermissions(role);

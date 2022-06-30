@@ -42,7 +42,12 @@ public class AsyncEvent<TSender, TArgs>
         this.__exception_handlers = exceptionHandlers ?? new();
     }
 
-    public void Invoke(TSender sender, TArgs args, CancellationToken token)
+    public void Invoke
+    (
+        TSender sender,
+        TArgs args,
+        CancellationToken token
+    )
     {
         Parallel.ForEach(this.__handlers, async handler =>
         {

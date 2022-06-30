@@ -92,7 +92,10 @@ public class TimerService
         this.__logger.LogInformation("Timer service successfully initialized, {count} timers were loaded", timers.Count());
     }
 
-    public void Register(TimedObject timer)
+    public void Register
+    (
+        TimedObject timer
+    )
     {
         _ = Task.Run(() =>
         {
@@ -109,7 +112,13 @@ public class TimerService
         writer.Close();
     }
 
-    private void handleEviction(Object key, Object? value, EvictionReason reason, Object? state)
+    private void handleEviction
+    (
+        Object key,
+        Object? value,
+        EvictionReason reason,
+        Object? state
+    )
     {
         if(key is not Guid guid)
         {
@@ -144,7 +153,13 @@ public class TimerService
         }
     }
 
-    private ValueTask handleEventException(TimerService sender, TimedObject args, Exception e, CancellationToken token)
+    private ValueTask handleEventException
+    (
+        TimerService sender,
+        TimedObject args,
+        Exception e,
+        CancellationToken token
+    )
     {
         this.__logger.LogError(
             e,

@@ -11,7 +11,10 @@ public interface IConfiguration : IDatafixable
 {
     public JsonElement Configuration { get; }
 
-    public T Value<T>(String path)
+    public T Value<T>
+    (
+        String path
+    )
     {
         // assume we want it to start with $.configuration.
         // if $.data_version is requested instead, we should know that.

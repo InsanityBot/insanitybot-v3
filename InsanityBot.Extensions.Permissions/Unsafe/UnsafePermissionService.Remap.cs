@@ -14,15 +14,25 @@ using Starnight.Internal.Entities.Guilds;
 
 public partial class UnsafePermissionService
 {
-    public async ValueTask RemapPermissions(IEnumerable<DiscordRole> roles)
+    public async ValueTask RemapPermissions
+    (
+        IEnumerable<DiscordRole> roles
+    )
     {
         await Parallel.ForEachAsync(roles, this.remapSingleRole);
     }
 
-    public async ValueTask RemapPermissions(DiscordGuild guild)
+    public async ValueTask RemapPermissions
+    (
+        DiscordGuild guild
+    )
         => await this.RemapPermissions(guild.Roles);
 
-    private ValueTask remapSingleRole(DiscordRole role, CancellationToken token)
+    private ValueTask remapSingleRole
+    (
+        DiscordRole role,
+        CancellationToken token
+    )
     {
         // avoid constructor logic
         Object uninitialized = RuntimeHelpers.GetUninitializedObject(typeof(RolePermissions));
