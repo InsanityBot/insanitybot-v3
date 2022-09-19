@@ -15,12 +15,12 @@ public static partial class Program
     public const String ConsoleLogFormat =
         "[{@t:yyyy-MM-dd HH:mm:ss.fff}] " +
         "[{@l}] " +
-        "[{Coalesce(SourceContext, '<none>')}]: {@m}\n{@x}";
+        "[{Coalesce(SourceContext, '<none>')}]: {@m}\r\n{@x}";
 
     public const String FileLogFormat =
         "[{@t:yyyy-MM-dd HH:mm:ss.fff}] " +
         "[{@l}] " +
-        "[{Coalesce(SourceContext, '<none>')}]: {@m}\n{@x}";
+        "[{Coalesce(SourceContext, '<none>')}]: {@m}\r\n{@x}";
 
     private static IHostBuilder addInsanityBotLogging
     (
@@ -35,6 +35,7 @@ public static partial class Program
 #if DEBUG
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft.Extensions.Hosting", LogEventLevel.Information)
+                .MinimumLevel.Override("Starnight", LogEventLevel.Verbose)
 #else
                 .MinimumLevel.Information()
 #endif
